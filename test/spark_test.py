@@ -16,9 +16,7 @@ def count_dates_since_date(dates: List[str], recent_limit: datetime) -> int:
 
 
 def test_will_do_the_right_thing(spark):
-    df = create_df_from_json("fixtures/reviews.json", spark)
-
-    # Import data on checkin events
+    reviews_df = create_df_from_json("fixtures/reviews.json", spark)
     checkin_df = create_df_from_json("fixtures/checkin.json", spark)
     # Import data on tips - New events source
     # Import data on users
@@ -33,13 +31,13 @@ def test_will_do_the_right_thing(spark):
     checkin_df = checkin_df.withColumn("recent_checkin_count", count_recent_dates_udf(F.col("checkins_list")))
     checkin_df = checkin_df.drop("date", "checkins_list")
 
-    df = df.join(checkin_df, on="business_id")
+    reviews_df = reviews_df.join(checkin_df, on="business_id")
     # Reformat to nest all columns except review or checkin ID
     # Output JSON
 
     # Check output JSON against expected
     expected_json = read_json()
-    assert data_frame_to_json(df) == expected_json
+    assert data_frame_to_json(reviews_df) == expected_json
 
 
 def create_df_from_json(json_file, spark):
