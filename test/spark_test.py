@@ -32,6 +32,8 @@ def test_will_do_the_right_thing(spark):
     checkin_df = checkin_df.withColumn("recent_checkin_count", count_recent_dates_udf(F.col("checkins_list")))
     checkin_df = checkin_df.drop("date", "checkins_list")
 
+    reviews_df = reviews_df.groupby("business_id").count()
+
     entity_with_activity_df = business_df.join(checkin_df, on="business_id")
     entity_with_activity_df = entity_with_activity_df.join(reviews_df, on="business_id")
     # Reformat to nest all columns except review or checkin ID
@@ -52,7 +54,7 @@ def create_data_frame_from_json(json_file, spark):
 
 def data_frame_to_json(df: DataFrame) -> List:
     output = [json.loads(item) for item in df.toJSON().collect()]
-    output.sort(key=lambda item: item["review_id"])
+    output.sort(key=lambda item: item["business_id"])
     return output
 
 
