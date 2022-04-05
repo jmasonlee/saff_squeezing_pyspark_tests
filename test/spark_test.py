@@ -1,6 +1,5 @@
 import json
 from datetime import datetime
-from functools import reduce
 from typing import List
 
 from pyspark.sql import DataFrame
@@ -10,14 +9,10 @@ from pyspark.sql.types import IntegerType
 
 
 def count_dates_since_date(dates: List[str], recent_limit: datetime) -> int:
-    dates = convert_strings_to_dates(dates)
-    return len(list(filter(lambda date: date.year > recent_limit.year, dates)))
-
-
-def convert_strings_to_dates(dates: List[str]) -> map[datetime]:
     dates = map(lambda date_string: date_string.lstrip(), dates)
     dates = map(lambda string: datetime.strptime(string, '%Y-%m-%d %H:%M:%S'), dates)
-    return dates
+    dates = dates
+    return len(list(filter(lambda date: date.year > recent_limit.year, dates)))
 
 
 def test_will_do_the_right_thing(spark):
