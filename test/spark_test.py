@@ -14,7 +14,7 @@ def count_dates_since_date(dates: List[str], recent_limit: datetime) -> int:
     return len(list(filter(lambda date: date.year > recent_limit.year, dates)))
 
 
-def convert_strings_to_dates(dates: List[str]) -> List[datetime]:
+def convert_strings_to_dates(dates: List[str]) -> map[datetime]:
     dates = map(lambda date_string: date_string.lstrip(), dates)
     dates = map(lambda string: datetime.strptime(string, '%Y-%m-%d %H:%M:%S'), dates)
     return dates
