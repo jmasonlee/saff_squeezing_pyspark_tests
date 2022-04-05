@@ -9,9 +9,13 @@ from pyspark.sql.types import IntegerType
 
 
 def count_dates_since_date(dates: List[str], recent_limit: datetime) -> int:
-    dates = map(lambda date_string: date_string.lstrip(), dates)
-    dates = map(lambda string: datetime.strptime(string, '%Y-%m-%d %H:%M:%S'), dates)
-    return len(list(filter(lambda date: date.year > recent_limit.year, dates)))
+    return len(list(filter(lambda date: is_after_date(date, recent_limit), dates)))
+
+
+def is_after_date(date_to_check: str, limiting_date: datetime) -> bool:
+    date_to_check = date_to_check.lstrip()
+    date_to_check = datetime.strptime(date_to_check, '%Y-%m-%d %H:%M:%S')
+    return date_to_check.year > limiting_date.year
 
 
 def test_will_do_the_right_thing(spark):
@@ -31,7 +35,7 @@ def test_will_do_the_right_thing(spark):
     checkin_df = checkin_df.withColumn("recent_checkin_count", count_recent_dates_udf(F.col("checkins_list")))
     checkin_df = checkin_df.drop("date", "checkins_list")
 
-    reviews_df = reviews_df.filter()
+    #reviews_df = reviews_df.filter()
     reviews_df = reviews_df.groupby("business_id").count()
 
     entity_with_activity_df = business_df.join(checkin_df, on="business_id")
