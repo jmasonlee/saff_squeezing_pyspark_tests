@@ -21,13 +21,9 @@ def is_after_date(date_to_check: str, limiting_date: datetime) -> bool:
 def test_will_do_the_right_thing(spark):
     reviews_df = create_df_from_json("fixtures/reviews.json", spark)
     checkin_df = create_df_from_json("fixtures/checkin.json", spark)
-    # Import data on tips
+    tips_df = create_df_from_json("fixtures/tips.json", spark)
     business_df = create_df_from_json("fixtures/business.json", spark)
 
-    # Read each review event
-    # Join it with business info
-    # Join it with user info
-    # Was there a recent, corresponding tip or checkin - extra method
     count_recent_dates_udf = udf(lambda dates: count_dates_since_date(dates, datetime(2020, 12, 31)), IntegerType())
     checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
     checkin_df = checkin_df.withColumn("num_checkins", count_recent_dates_udf(F.col("checkins_list")))
@@ -37,21 +33,24 @@ def test_will_do_the_right_thing(spark):
     reviews_df = reviews_df.groupby("business_id").count()
     reviews_df = reviews_df.withColumnRenamed("count", "num_reviews")
 
-    entity_with_activity_df = business_df.join(checkin_df, on="business_id", )
-    entity_with_activity_df = entity_with_activity_df.join(reviews_df, on="business_id")
-    # Reformat to nest all columns except review or checkin ID
-    # Output JSON
+    tips_df = tips_df.filter(tips_df.date > datetime(2020, 12, 31))
+    tips_df = tips_df.groupby("business_id").count()
+    tips_df = tips_df.withColumnRenamed("count", "num_tips")
+
+    entity_with_activity_df = business_df.join(checkin_df, on="business_id", how='left')
+    entity_with_activity_df = entity_with_activity_df.join(reviews_df, on="business_id", how='left')
+    entity_with_activity_df = entity_with_activity_df.join(tips_df, on="business_id", how='left')
 
     # Check output JSON against expected
-    # expected_json = read_json()
-    # assert data_frame_to_json(entity_with_activity_df) == expected_json
-    with open("fixtures/expected.json", "w") as f:
-        jsons = ''.join(
-            json.dumps(line) if line else line
-            for line in data_frame_to_json(entity_with_activity_df)
-        )
-
-        f.write(jsons)
+    expected_json = read_json()
+    assert data_frame_to_json(entity_with_activity_df) == expected_json
+    # with open("fixtures/expected.json", "w") as f:
+    #     jsons = ''.join(
+    #         json.dumps(line) if line else line
+    #         for line in data_frame_to_json(entity_with_activity_df)
+    #     )
+    #
+    #     f.write(jsons)
 
 
 
