@@ -37,9 +37,15 @@ def test_will_do_the_right_thing(spark):
     tips_df = tips_df.groupby("business_id").count()
     tips_df = tips_df.withColumnRenamed("count", "num_tips")
 
-    entity_with_activity_df = business_df.join(checkin_df, on="business_id", how='left')
-    entity_with_activity_df = entity_with_activity_df.join(reviews_df, on="business_id", how='left')
-    entity_with_activity_df = entity_with_activity_df.join(tips_df, on="business_id", how='left')
+    entity_with_activity_df = business_df.join(checkin_df, on="business_id", how='left').fillna(0)
+    entity_with_activity_df = entity_with_activity_df.join(reviews_df, on="business_id", how='left').fillna(0)
+    entity_with_activity_df = entity_with_activity_df.join(tips_df, on="business_id", how='left').fillna(0)
+
+    entity_with_activity_df = entity_with_activity_df.withColumn("num_interactions",
+                                                                 entity_with_activity_df.num_reviews +
+                                                                 entity_with_activity_df.num_tips +
+                                                                 entity_with_activity_df.num_checkins)
+    entity_with_activity_df = entity_with_activity_df.withColumn("dt", F.lit(datetime.today().strftime('%Y-%m-%d')))
 
     # Check output JSON against expected
     expected_json = read_json()
@@ -51,7 +57,6 @@ def test_will_do_the_right_thing(spark):
     #     )
     #
     #     f.write(jsons)
-
 
 
 def create_df_from_json(json_file, spark):

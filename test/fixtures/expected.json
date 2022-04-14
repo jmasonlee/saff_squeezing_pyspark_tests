@@ -1,52 +1,50 @@
-[
-  {
-    "business_id": "CF33F8-E6oudUQ46HnavjQ",
-    "address": "615 S Main St",
-    "attributes": {
-      "Alcohol": "none",
-      "Ambience": "None",
-      "BikeParking": "False",
-      "BusinessAcceptsCreditCards": "True",
-      "BusinessParking": "None",
-      "ByAppointmentOnly": "False",
-      "Caters": "False",
-      "CoatCheck": "False",
-      "DogsAllowed": "False",
-      "DriveThru": "True",
-      "GoodForKids": "True",
-      "HappyHour": "False",
-      "HasTV": "True",
-      "OutdoorSeating": "True",
-      "RestaurantsAttire": "casual",
-      "RestaurantsDelivery": "True",
-      "RestaurantsGoodForGroups": "True",
-      "RestaurantsPriceRange2": "1",
-      "RestaurantsReservations": "False",
-      "RestaurantsTableService": "False",
-      "RestaurantsTakeOut": "True",
-      "WheelchairAccessible": "True",
-      "WiFi": "no"
-    },
-    "categories": "Burgers, Fast Food, Sandwiches, Food, Ice Cream & Frozen Yogurt, Restaurants",
-    "city": "Ashland City",
-    "hours": {
-      "Friday": "9:0-0:0",
-      "Monday": "0:0-0:0",
-      "Saturday": "9:0-22:0",
-      "Sunday": "8:0-22:0",
-      "Thursday": "6:0-22:0",
-      "Tuesday": "6:0-22:0",
-      "Wednesday": "6:0-22:0"
-    },
-    "is_open": 1,
-    "latitude": 36.269593,
-    "longitude": -87.058943,
-    "name": "Sonic Drive-In",
-    "postal_code": "37015",
-    "review_count": 6,
-    "stars": 2.0,
-    "state": "TN"
-  },
+[{"address": "615 S Main St",
+  "attributes": {"Alcohol": "none",
+                 "Ambience": "None",
+                 "BikeParking": "False",
+                 "BusinessAcceptsCreditCards": "True",
+                 "BusinessParking": "None",
+                 "ByAppointmentOnly": "False",
+                 "Caters": "False",
+                 "CoatCheck": "False",
+                 "DogsAllowed": "False",
+                 "DriveThru": "True",
+                 "GoodForKids": "True",
+                 "HappyHour": "False",
+                 "HasTV": "True",
+                 "OutdoorSeating": "True",
+                 "RestaurantsAttire": "casual",
+                 "RestaurantsDelivery": "True",
+                 "RestaurantsGoodForGroups": "True",
+                 "RestaurantsPriceRange2": "1",
+                 "RestaurantsReservations": "False",
+                 "RestaurantsTableService": "False",
+                 "RestaurantsTakeOut": "True",
+                 "WheelchairAccessible": "True",
+                 "WiFi": "no"},
+  "business_id": "CF33F8-E6oudUQ46HnavjQ",
+  "categories": "Burgers, Fast Food, Sandwiches, Food, Ice Cream & Frozen Yogurt, Restaurants",
+  "city": "Ashland City",
+  "dt": "2022-04-13",
+  "hours": {"Friday": "9:0-0:0",
+            "Monday": "0:0-0:0",
+            "Saturday": "9:0-22:0",
+            "Sunday": "8:0-22:0",
+            "Thursday": "6:0-22:0",
+            "Tuesday": "6:0-22:0",
+            "Wednesday": "6:0-22:0"},
+  "is_open": 1,
+  "latitude": 36.269593,
+  "longitude": -87.058943,
+  "name": "Sonic Drive-In",
+  "num_checkins": 0,
+  "num_interactions": 1,
+  "num_reviews": 0,
+  "num_tips": 1,
+  "postal_code": "37015",
+  "review_count": 6,
+  "stars": 2.0,
+  "state": "TN"},
   {
     "business_id": "MTSW4McQd7CbVtyjqoe9mw",
     "address": "935 Race St",
@@ -83,7 +81,10 @@
     "stars": 4.0,
     "state": "PA",
     "num_checkins": 13,
-    "num_reviews": 1
+    "num_reviews": 1,
+    "num_tips": 0,
+    "num_interactions": 14,
+    "dt": "2022-04-13"
   },
   {
     "business_id": "Pns2l4eNsfO8kk83dixA6A",
@@ -102,7 +103,11 @@
     "stars": 5.0,
     "state": "CA",
     "most.recent": "2021-11-11 16:23:50",
-    "num_checkins": 6
+    "num_checkins": 6,
+    "num_reviews": 0,
+    "num_tips": 1,
+    "num_interactions": 7,
+    "dt": "2022-04-13"
   },
   {
     "business_id": "bBDDEgkFA1Otx9Lfe7BZUQ",
@@ -148,7 +153,12 @@
     "postal_code": "37207",
     "review_count": 10,
     "stars": 1.5,
-    "state": "TN"
+    "state": "TN",
+    "num_checkins": 0,
+    "num_reviews": 0,
+    "num_tips": 0,
+    "num_interactions": 0,
+    "dt": "2022-04-13"
   },
   {
     "business_id": "k0hlBqXX-Bt0vf1op7Jr1w",
@@ -180,7 +190,12 @@
     "postal_code": "63123",
     "review_count": 19,
     "stars": 3.0,
-    "state": "MO"
+    "state": "MO",
+    "num_checkins": 0,
+    "num_reviews": 0,
+    "num_tips": 0,
+    "num_interactions": 0,
+    "dt": "2022-04-13"
   },
   {
     "business_id": "mWMc6_wTdE0EUBKIGXDVfA",
@@ -212,7 +227,10 @@
     "stars": 4.5,
     "state": "PA",
     "num_checkins": 10,
-    "num_reviews": 1
+    "num_reviews": 1,
+    "num_tips": 0,
+    "num_interactions": 11,
+    "dt": "2022-04-13"
   },
   {
     "business_id": "mpf3x-BjTdTEA3yCZrAYPw",
@@ -240,7 +258,10 @@
     "state": "MO",
     "most.recent": "2021-07-25 00:31:02",
     "num_checkins": 1,
-    "num_reviews": 1
+    "num_reviews": 1,
+    "num_tips": 1,
+    "num_interactions": 3,
+    "dt": "2022-04-13"
   },
   {
     "business_id": "n_0UpQx1hsNbnPUSlodU8w",
@@ -270,7 +291,11 @@
     "review_count": 13,
     "stars": 2.5,
     "state": "MO",
-    "num_checkins": 8
+    "num_checkins": 8,
+    "num_reviews": 0,
+    "num_tips": 0,
+    "num_interactions": 8,
+    "dt": "2022-04-13"
   },
   {
     "business_id": "qkRM_2X51Yqxk3btlwAQIg",
@@ -291,7 +316,12 @@
     "postal_code": "33707",
     "review_count": 5,
     "stars": 3.5,
-    "state": "FL"
+    "state": "FL",
+    "num_checkins": 0,
+    "num_reviews": 0,
+    "num_tips": 0,
+    "num_interactions": 0,
+    "dt": "2022-04-13"
   },
   {
     "business_id": "tUFrWirKiKi_TAnsVWINQQ",
@@ -334,5 +364,10 @@
     "stars": 3.5,
     "state": "AZ",
     "most.recent": "2021-03-30 22:46:33",
-    "num_checkins": 1
-  }]
+    "num_checkins": 1,
+    "num_reviews": 0,
+    "num_tips": 1,
+    "num_interactions": 2,
+    "dt": "2022-04-13"
+  }
+]
