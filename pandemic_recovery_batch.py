@@ -1,9 +1,7 @@
-import json
 from datetime import datetime
 from typing import List
 
-from pyspark.sql import DataFrame
-from pyspark.sql import functions as F
+from pyspark.sql import functions as F, DataFrame
 from pyspark.sql.functions import udf
 from pyspark.sql.types import IntegerType
 
@@ -18,32 +16,19 @@ def is_after_date(date_to_check: str, limiting_date: datetime) -> bool:
     return date_to_check.year > limiting_date.year
 
 
-def test_will_do_the_right_thing(spark):
-    reviews_df = create_df_from_json("fixtures/reviews.json", spark)
-    checkin_df = create_df_from_json("fixtures/checkin.json", spark)
-    tips_df = create_df_from_json("fixtures/tips.json", spark)
-    business_df = create_df_from_json("fixtures/business.json", spark)
-    mobile_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
+def transform(business_df: DataFrame,
+              checkin_df: DataFrame,
+              reviews_df: DataFrame,
+              tips_df: DataFrame,
+              mobile_reviews_df: DataFrame,
+              run_date: str = datetime.today().strftime('%Y-%m-%d')):
 
-    entity_with_activity_df = transform(business_df, checkin_df, reviews_df, tips_df, mobile_reviews_df)
-
-    expected_json = read_json()
-    assert data_frame_to_json(entity_with_activity_df) == expected_json
-    # with open("fixtures/expected.json", "w") as f:
-    #     jsons = ''.join(
-    #         json.dumps(line) if line else line
-    #         for line in data_frame_to_json(entity_with_activity_df)
-    #     )
-    #
-    #     f.write(jsons)
-
-
-def transform(business_df, checkin_df, reviews_df, tips_df, mobile_reviews_df):
-    reviews_df = reviews_df.join(checkin_df, on=['business_id', 'date']).select(reviews_df.columns)
-    reviews_df = reviews_df.union(mobile_reviews_df)
+    reviews_df = mobile_reviews_df.join(checkin_df, on=['business_id', 'date']).select(reviews_df.columns)
+    reviews_df = reviews_df.union(reviews_df)
     reviews_df = reviews_df.filter(reviews_df.date > datetime(2020, 12, 31))
     reviews_df = reviews_df.groupby("business_id").count()
     reviews_df = reviews_df.withColumnRenamed("count", "num_reviews")
+
     count_recent_dates_udf = udf(lambda dates: count_dates_since_date(dates, datetime(2020, 12, 31)), IntegerType())
     checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
     checkin_df = checkin_df.withColumn("num_checkins", count_recent_dates_udf(F.col("checkins_list")))
@@ -60,20 +45,6 @@ def transform(business_df, checkin_df, reviews_df, tips_df, mobile_reviews_df):
                                                                  entity_with_activity_df.num_reviews +
                                                                  entity_with_activity_df.num_tips +
                                                                  entity_with_activity_df.num_checkins)
-    entity_with_activity_df = entity_with_activity_df.withColumn("dt", F.lit(datetime.today().strftime('%Y-%m-%d')))
+    entity_with_activity_df = entity_with_activity_df.withColumn("dt", F.lit(run_date))
+
     return entity_with_activity_df
-
-
-def create_df_from_json(json_file, spark):
-    return spark.read.option("multiline", "true").json(json_file)
-
-
-def data_frame_to_json(df: DataFrame) -> List:
-    output = [json.loads(item) for item in df.toJSON().collect()]
-    output.sort(key=lambda item: item["business_id"])
-    return output
-
-
-def read_json():
-    with open("fixtures/expected.json") as f:
-        return json.loads(f.read())
