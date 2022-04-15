@@ -15,15 +15,15 @@ def test_will_do_the_right_thing(spark):
 
     entity_with_activity_df = transform(business_df, checkin_df, reviews_df, tips_df, mobile_reviews_df, )
 
-    # expected_json = read_json()
-    # assert data_frame_to_json(entity_with_activity_df) == expected_json
-    with open("fixtures/expected.json", "w") as f:
-        jsons = ''.join(
-            json.dumps(line) if line else line
-            for line in data_frame_to_json(entity_with_activity_df)
-        )
-
-        f.write(jsons)
+    expected_json = read_json()
+    assert data_frame_to_json(entity_with_activity_df) == expected_json
+    # with open("fixtures/expected.json", "w") as f:
+    #     jsons = ''.join(
+    #         json.dumps(line) if line else line
+    #         for line in data_frame_to_json(entity_with_activity_df)
+    #     )
+    #
+    #     f.write(jsons)
 
 
 def create_df_from_json(json_file, spark):
