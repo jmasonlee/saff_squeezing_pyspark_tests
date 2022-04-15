@@ -14,12 +14,14 @@ def test_will_count_reviews_without_matching_checkins(spark: SparkSession) -> No
     business_df = create_df_from_json("fixtures/business.json", spark)
     mobile_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
 
-    entity_with_activity_df = transform(
+    actual_df = transform(
         business_df, checkin_df, reviews_df, tips_df, mobile_reviews_df, datetime(2022, 4, 14).strftime('%Y-%m-%d')
     )
 
     expected_json = read_json()
-    assert data_frame_to_json(entity_with_activity_df) == expected_json
+    actual_json = data_frame_to_json(actual_df)
+
+    assert actual_json[4]["num_reviews"] == 1
 
 
 def create_df_from_json(json_file, spark):
