@@ -23,31 +23,10 @@ def test_will_do_the_right_thing(spark):
     checkin_df = create_df_from_json("fixtures/checkin.json", spark)
     tips_df = create_df_from_json("fixtures/tips.json", spark)
     business_df = create_df_from_json("fixtures/business.json", spark)
+    mobile_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
 
-    count_recent_dates_udf = udf(lambda dates: count_dates_since_date(dates, datetime(2020, 12, 31)), IntegerType())
-    checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
-    checkin_df = checkin_df.withColumn("num_checkins", count_recent_dates_udf(F.col("checkins_list")))
-    checkin_df = checkin_df.drop("date", "checkins_list")
+    entity_with_activity_df = transform(business_df, checkin_df, reviews_df, tips_df, mobile_reviews_df)
 
-    reviews_df = reviews_df.filter(reviews_df.date > datetime(2020, 12, 31))
-    reviews_df = reviews_df.groupby("business_id").count()
-    reviews_df = reviews_df.withColumnRenamed("count", "num_reviews")
-
-    tips_df = tips_df.filter(tips_df.date > datetime(2020, 12, 31))
-    tips_df = tips_df.groupby("business_id").count()
-    tips_df = tips_df.withColumnRenamed("count", "num_tips")
-
-    entity_with_activity_df = business_df.join(checkin_df, on="business_id", how='left').fillna(0)
-    entity_with_activity_df = entity_with_activity_df.join(reviews_df, on="business_id", how='left').fillna(0)
-    entity_with_activity_df = entity_with_activity_df.join(tips_df, on="business_id", how='left').fillna(0)
-
-    entity_with_activity_df = entity_with_activity_df.withColumn("num_interactions",
-                                                                 entity_with_activity_df.num_reviews +
-                                                                 entity_with_activity_df.num_tips +
-                                                                 entity_with_activity_df.num_checkins)
-    entity_with_activity_df = entity_with_activity_df.withColumn("dt", F.lit(datetime.today().strftime('%Y-%m-%d')))
-
-    # Check output JSON against expected
     expected_json = read_json()
     assert data_frame_to_json(entity_with_activity_df) == expected_json
     # with open("fixtures/expected.json", "w") as f:
@@ -59,11 +38,33 @@ def test_will_do_the_right_thing(spark):
     #     f.write(jsons)
 
 
+def transform(business_df, checkin_df, reviews_df, tips_df, mobile_reviews_df):
+    reviews_df = reviews_df.join(checkin_df, on=['business_id', 'date']).select(reviews_df.columns)
+    reviews_df = reviews_df.union(mobile_reviews_df)
+    reviews_df = reviews_df.filter(reviews_df.date > datetime(2020, 12, 31))
+    reviews_df = reviews_df.groupby("business_id").count()
+    reviews_df = reviews_df.withColumnRenamed("count", "num_reviews")
+    count_recent_dates_udf = udf(lambda dates: count_dates_since_date(dates, datetime(2020, 12, 31)), IntegerType())
+    checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
+    checkin_df = checkin_df.withColumn("num_checkins", count_recent_dates_udf(F.col("checkins_list")))
+    checkin_df = checkin_df.drop("date", "checkins_list")
+
+    tips_df = tips_df.filter(tips_df.date > datetime(2020, 12, 31))
+    tips_df = tips_df.groupby("business_id").count()
+    tips_df = tips_df.withColumnRenamed("count", "num_tips")
+
+    entity_with_activity_df = business_df.join(checkin_df, on="business_id", how='left').fillna(0)
+    entity_with_activity_df = entity_with_activity_df.join(reviews_df, on="business_id", how='left').fillna(0)
+    entity_with_activity_df = entity_with_activity_df.join(tips_df, on="business_id", how='left').fillna(0)
+    entity_with_activity_df = entity_with_activity_df.withColumn("num_interactions",
+                                                                 entity_with_activity_df.num_reviews +
+                                                                 entity_with_activity_df.num_tips +
+                                                                 entity_with_activity_df.num_checkins)
+    entity_with_activity_df = entity_with_activity_df.withColumn("dt", F.lit(datetime.today().strftime('%Y-%m-%d')))
+    return entity_with_activity_df
+
+
 def create_df_from_json(json_file, spark):
-    return create_data_frame_from_json(json_file, spark)
-
-
-def create_data_frame_from_json(json_file, spark):
     return spark.read.option("multiline", "true").json(json_file)
 
 
