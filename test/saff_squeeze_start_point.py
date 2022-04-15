@@ -18,7 +18,6 @@ def test_will_count_reviews_without_matching_checkins(spark: SparkSession) -> No
         business_df, checkin_df, reviews_df, tips_df, mobile_reviews_df, datetime(2022, 4, 14).strftime('%Y-%m-%d')
     )
 
-    expected_json = read_json()
     actual_json = data_frame_to_json(actual_df)
 
     assert actual_json[4]["num_reviews"] == 1
