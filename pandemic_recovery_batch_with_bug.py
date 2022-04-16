@@ -12,8 +12,6 @@ def transform(business_df: DataFrame,
               tips_df: DataFrame,
               mobile_reviews_df: DataFrame,
               run_date: str = datetime.today().strftime('%Y-%m-%d')):
-    checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
-    checkin_df = checkin_df.select(F.col("business_id"), F.explode(F.col("checkins_list")).alias("date"))
 
     reviews_df = count_reviews(checkin_df, mobile_reviews_df, reviews_df)
 
@@ -44,20 +42,20 @@ def count_tips(tips_df):
 
 
 def count_checkins(checkin_df):
-    checkin_df = checkin_df.filter(checkin_df.date > datetime(2020, 12, 31))
-    checkin_df = checkin_df.groupby("business_id").count()
-    checkin_df = checkin_df.withColumnRenamed("count", "num_checkins")
+    count_recent_dates_udf = udf(lambda dates: count_dates_since_date(dates, datetime(2020, 12, 31)), IntegerType())
+    checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
+    checkin_df = checkin_df.withColumn("num_checkins", count_recent_dates_udf(F.col("checkins_list")))
+    checkin_df = checkin_df.drop("date", "checkins_list")
     return checkin_df
 
 
 def count_reviews(checkin_df, mobile_reviews_df, reviews_df):
-    mobile_reviews_df = mobile_reviews_df.join(checkin_df, on=['business_id'], how="left_anti").select(mobile_reviews_df.columns)
-    reviews_df = mobile_reviews_df.union(reviews_df)
+    reviews_df = mobile_reviews_df.join(checkin_df, on=['business_id', 'date']).select(reviews_df.columns)
+    reviews_df = reviews_df.union(reviews_df)
     reviews_df = reviews_df.filter(reviews_df.date > datetime(2020, 12, 31))
     reviews_df = reviews_df.groupby("business_id").count()
     reviews_df = reviews_df.withColumnRenamed("count", "num_reviews")
     return reviews_df
-
 
 def count_dates_since_date(dates: List[str], recent_limit: datetime) -> int:
     return len(list(filter(lambda date: is_after_date(date, recent_limit), dates)))

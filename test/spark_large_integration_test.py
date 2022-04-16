@@ -4,7 +4,7 @@ from typing import List
 
 from pyspark.sql import DataFrame, SparkSession
 
-from pandemic_recovery_batch import transform
+from pandemic_recovery_batch_with_bug import transform
 
 
 def test_will_do_the_right_thing(spark: SparkSession) -> None:

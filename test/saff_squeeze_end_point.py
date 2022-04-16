@@ -2,25 +2,32 @@ import json
 from datetime import datetime
 from typing import List
 
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame, SparkSession, functions as F
 
-from pandemic_recovery_batch import transform
+from pandemic_recovery_batch import count_reviews, count_checkins, count_tips
 
 
 def test_will_count_reviews_without_matching_checkins(spark: SparkSession) -> None:
     reviews_df = create_df_from_json("fixtures/reviews.json", spark)
     checkin_df = create_df_from_json("fixtures/checkin.json", spark)
-    tips_df = create_df_from_json("fixtures/tips.json", spark)
-    business_df = create_df_from_json("fixtures/business.json", spark)
     mobile_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
 
-    actual_df = transform(
-        business_df, checkin_df, reviews_df, tips_df, mobile_reviews_df, datetime(2022, 4, 14).strftime('%Y-%m-%d')
-    )
+    checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
+    checkin_df = checkin_df.select(F.col("business_id"), F.explode(F.col("checkins_list")).alias("date"))
 
-    actual_json = data_frame_to_json(actual_df)
+    reviews_df = count_reviews(checkin_df, mobile_reviews_df, reviews_df)
 
+    actual_json = data_frame_to_json(reviews_df)
     assert actual_json[4]["num_reviews"] == 1
+
+
+
+
+
+
+
+
+
 
 
 def create_df_from_json(json_file, spark):
