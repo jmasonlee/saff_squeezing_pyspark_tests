@@ -14,7 +14,7 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
     business_df  = create_df_from_json("fixtures/business.json", spark)
     m_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
 
-    entity_with_activity_df = transform(
+    actual_df = transform(
         business_df,
         checkin_df,
         reviews_df,
@@ -24,11 +24,11 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
     )
 
     expected_json = read_json()
-    assert data_frame_to_json(entity_with_activity_df) == expected_json
+    assert data_frame_to_json(actual_df) == expected_json
     # with open("fixtures/expected.json", "w") as f:
     #     jsons = ''.join(
     #         json.dumps(line) if line else line
-    #         for line in data_frame_to_json(entity_with_activity_df)
+    #         for line in data_frame_to_json(actual_df)
     #     )
     #
     #     f.write(jsons)
