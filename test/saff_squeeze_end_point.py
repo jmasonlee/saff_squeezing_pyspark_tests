@@ -9,13 +9,17 @@ from pandemic_recovery_batch import transform
 
 
 def test_will_count_reviews_without_matching_checkins(spark: SparkSession) -> None:
-    reviews_df = create_df_from_json("fixtures/reviews.json", spark)
+    run_date = datetime(2022, 4, 14).strftime('%Y-%m-%d')
+    reviews_df = spark.createDataFrame(
+        [(run_date, "fake_business_id")], StructType([StructField("date", StringType()), StructField("business_id", StringType())]))
     checkin_df = spark.createDataFrame(
         [], StructType([StructField("date", DateType()), StructField("business_id", StringType())]))
     tips_df = spark.createDataFrame(
         [], StructType([StructField("date", DateType()), StructField("business_id", StringType())]))
-    business_df = create_df_from_json("fixtures/business.json", spark)
-    mobile_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
+    business_df = spark.createDataFrame(
+        [("fake_business_id", "fake_business")], StructType([StructField("business_id", StringType()),StructField("name", StringType())]))
+    mobile_reviews_df = spark.createDataFrame(
+        [(run_date, "fake_business_id")], StructType([StructField("date", StringType()), StructField("business_id", StringType())]))
 
     actual_df = transform(
         business_df,
@@ -23,11 +27,11 @@ def test_will_count_reviews_without_matching_checkins(spark: SparkSession) -> No
         reviews_df,
         tips_df,
         mobile_reviews_df,
-        datetime(2022, 4, 14).strftime('%Y-%m-%d')
+        run_date
     )
 
     actual_json = data_frame_to_json(actual_df)
-    assert actual_json[4]["num_reviews"] == 1
+    assert actual_json[0]["num_reviews"] == 2
 
 
 def create_df_from_json(json_file, spark):
