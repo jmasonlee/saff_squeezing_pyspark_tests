@@ -50,7 +50,9 @@ def count_checkins(checkin_df):
 
 
 def count_reviews(checkin_df, mobile_reviews_df, reviews_df):
-    reviews_df = mobile_reviews_df.join(checkin_df, on=['business_id', 'date']).select(reviews_df.columns)
+    reviews_df = (mobile_reviews_df
+                  .join(checkin_df, on=['business_id', 'date'])
+                  .select(reviews_df.columns))
     reviews_df = reviews_df.union(reviews_df)
     reviews_df = reviews_df.filter(reviews_df.date > datetime(2020, 12, 31))
     reviews_df = reviews_df.groupby("business_id").count()
