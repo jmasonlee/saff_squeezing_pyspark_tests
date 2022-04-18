@@ -10,7 +10,8 @@ from pandemic_recovery_batch import transform
 
 def test_will_count_reviews_without_matching_checkins(spark: SparkSession) -> None:
     reviews_df = create_df_from_json("fixtures/reviews.json", spark)
-    checkin_df = create_df_from_json("fixtures/checkin.json", spark)
+    checkin_df = spark.createDataFrame(
+        [], StructType([StructField("date", DateType()), StructField("business_id", StringType())]))
     tips_df = spark.createDataFrame(
         [], StructType([StructField("date", DateType()), StructField("business_id", StringType())]))
     business_df = create_df_from_json("fixtures/business.json", spark)
