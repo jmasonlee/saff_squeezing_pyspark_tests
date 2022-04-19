@@ -20,18 +20,18 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
         reviews_df,
         tips_df,
         m_reviews_df,
-        datetime(2022, 4, 14).strftime('%Y-%m-%d')
+        datetime(2022, 4, 14)
     )
 
-    expected_json = read_json()
-    assert data_frame_to_json(actual_df) == expected_json
-    # with open("fixtures/expected.json", "w") as f:
-    #     jsons = ''.join(
-    #         json.dumps(line) if line else line
-    #         for line in data_frame_to_json(actual_df)
-    #     )
-    #
-    #     f.write(jsons)
+    # expected_json = read_json()
+    # assert data_frame_to_json(actual_df) == expected_json
+    with open("fixtures/expected.json", "w") as f:
+        jsons = ''.join(
+            json.dumps(line) if line else line
+            for line in data_frame_to_json(actual_df)
+        )
+
+        f.write(jsons)
 
 
 def create_df_from_json(json_file, spark):

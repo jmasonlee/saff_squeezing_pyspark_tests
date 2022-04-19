@@ -15,11 +15,11 @@ def transform(business_df: DataFrame,
     checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
     checkin_df = checkin_df.select(F.col("business_id"), F.explode(F.col("checkins_list")).alias("date"))
 
-    reviews_df = count_reviews(checkin_df, mobile_reviews_df, reviews_df)
+    reviews_df = count_reviews(checkin_df, mobile_reviews_df, reviews_df, run_date)
 
-    checkin_df = count_checkins(checkin_df)
+    checkin_df = count_checkins(checkin_df, run_date)
 
-    tips_df = count_tips(tips_df)
+    tips_df = count_tips(tips_df, run_date)
 
     entity_with_activity_df = business_df.join(checkin_df, on="business_id", how='left').fillna(0)
     entity_with_activity_df = entity_with_activity_df.join(reviews_df, on="business_id", how='left').fillna(0)
@@ -36,15 +36,15 @@ def transform(business_df: DataFrame,
     return entity_with_activity_df
 
 
-def count_tips(tips_df):
-    tips_df = tips_df.filter(tips_df.date > datetime(2020, 12, 31))
+def count_tips(tips_df, run_date):
+    tips_df = tips_df.filter(tips_df.date == run_date)
     tips_df = tips_df.groupby("business_id").count()
     tips_df = tips_df.withColumnRenamed("count", "num_tips")
     return tips_df
 
 
-def count_checkins(checkin_df):
-    checkin_df = checkin_df.filter(checkin_df.date > datetime(2020, 12, 31))
+def count_checkins(checkin_df, run_date):
+    checkin_df = checkin_df.filter(checkin_df.date == run_date)
     checkin_df = checkin_df.groupby("business_id").count()
     checkin_df = checkin_df.withColumnRenamed("count", "num_checkins")
     return checkin_df
