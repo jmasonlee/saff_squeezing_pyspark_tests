@@ -8,19 +8,19 @@ from pandemic_recovery_batch import transform
 
 
 def test_will_count_reviews_without_matching_checkins(spark: SparkSession) -> None:
-    reviews_df = create_df_from_json("fixtures/reviews.json", spark)
+    browser_reviews_df = create_df_from_json("fixtures/browser_reviews.json", spark)
     checkin_df = create_df_from_json("fixtures/checkin.json", spark)
     tips_df = create_df_from_json("fixtures/tips.json", spark)
     business_df = create_df_from_json("fixtures/business.json", spark)
     mobile_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
 
     actual_df = transform(
-        business_df, checkin_df, reviews_df, tips_df, mobile_reviews_df, datetime(2022, 4, 14).strftime('%Y-%m-%d')
+        business_df, checkin_df, browser_reviews_df, tips_df, mobile_reviews_df, datetime(2022, 4, 14)
     )
 
     actual_json = data_frame_to_json(actual_df)
 
-    assert actual_json[4]["num_reviews"] == 1
+    assert actual_json[4]["num_reviews"] == 2
 
 
 def create_df_from_json(json_file, spark):
