@@ -8,14 +8,14 @@ from pyspark.sql.types import IntegerType
 
 def transform(business_df: DataFrame,
               checkin_df: DataFrame,
-              reviews_df: DataFrame,
+              browser_reviews_df: DataFrame,
               tips_df: DataFrame,
               mobile_reviews_df: DataFrame,
               run_date: datetime = datetime.today()):
     checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
     checkin_df = checkin_df.select(F.col("business_id"), F.explode(F.col("checkins_list")).alias("date"))
 
-    reviews_df = count_reviews(checkin_df, mobile_reviews_df, reviews_df, run_date)
+    reviews_df = count_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date)
 
     checkin_df = count_checkins(checkin_df, run_date)
 

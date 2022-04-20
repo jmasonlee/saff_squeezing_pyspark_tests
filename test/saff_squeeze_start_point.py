@@ -19,7 +19,6 @@ def test_will_count_reviews_without_matching_checkins(spark: SparkSession) -> No
     )
 
     actual_json = data_frame_to_json(actual_df)
-
     assert actual_json[4]["num_reviews"] == 2
 
 
