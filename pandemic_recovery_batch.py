@@ -12,11 +12,11 @@ def transform(business_df: DataFrame,
               tips_df: DataFrame,
               mobile_reviews_df: DataFrame,
               run_date: datetime = datetime.today()):
+
     checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
     checkin_df = checkin_df.select(F.col("business_id"), F.explode(F.col("checkins_list")).alias("date"))
 
     reviews_df = count_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date)
-
     checkin_df = count_checkins(checkin_df, run_date)
 
     tips_df = count_tips(tips_df, run_date)
@@ -64,11 +64,3 @@ def count_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date):
     return reviews_df
 
 
-def count_dates_since_date(dates: List[str], recent_limit: datetime) -> int:
-    return len(list(filter(lambda date: is_after_date(date, recent_limit), dates)))
-
-
-def is_after_date(date_to_check: str, limiting_date: datetime) -> bool:
-    date_to_check = date_to_check.lstrip()
-    date_to_check = datetime.strptime(date_to_check, '%Y-%m-%d %H:%M:%S')
-    return date_to_check.year > limiting_date.year
