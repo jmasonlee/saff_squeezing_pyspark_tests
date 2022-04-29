@@ -36,8 +36,7 @@ def test_will_count_reviews_without_matching_checkins(spark: SparkSession) -> No
         business_df, checkin_df, browser_reviews_df, tips_df, mobile_reviews_df, datetime(2022, 4, 14)
     )
 
-    actual_json = data_frame_to_json(actual_df)
-    assert actual_json[4]["num_reviews"] == 2
+    assert data_frame_to_json(actual_df)[4]["num_reviews"] == 2
 
 def test_will_not_count_reviews_with_matching_checkins(spark: SparkSession) -> None:
     browser_reviews_df = create_df_from_json("fixtures/browser_reviews.json", spark)
@@ -50,8 +49,7 @@ def test_will_not_count_reviews_with_matching_checkins(spark: SparkSession) -> N
         business_df, checkin_df, browser_reviews_df, tips_df, mobile_reviews_df, datetime(2022, 4, 14)
     )
 
-    actual_json = data_frame_to_json(actual_df)
-    assert actual_json[3]["num_reviews"] == 0
+    assert data_frame_to_json(actual_df)[3]["num_reviews"] == 0
 
 
 def create_df_from_json(json_file, spark):
