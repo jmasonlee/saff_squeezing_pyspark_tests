@@ -4,8 +4,8 @@
     "name": "Sonic Drive-In",
     "num_tips": 1,
     "num_checkins": 0,
-    "num_reviews": 0,
-    "num_interactions": 1,
+    "num_reviews": 1,
+    "num_interactions": 2,
     "dt": "2022-04-14"
   },
   {
@@ -22,8 +22,8 @@
     "name": "Abby Rappoport, LAC, CMQ",
     "num_tips": 1,
     "num_checkins": 6,
-    "num_reviews": 0,
-    "num_interactions": 7,
+    "num_reviews": 1,
+    "num_interactions": 8,
     "dt": "2022-04-14"
   },
   {
@@ -40,8 +40,8 @@
     "name": "Tsevi's Pub And Grill",
     "num_tips": 0,
     "num_checkins": 0,
-    "num_reviews": 0,
-    "num_interactions": 0,
+    "num_reviews": 2,
+    "num_interactions": 2,
     "dt": "2022-04-14"
   },
   {
@@ -75,9 +75,9 @@
     "business_id": "qkRM_2X51Yqxk3btlwAQIg",
     "name": "Temple Beth-El",
     "num_tips": 0,
-    "num_checkins": 0,
-    "num_reviews": 0,
-    "num_interactions": 0,
+    "num_checkins": 1,
+    "num_reviews": 1,
+    "num_interactions": 2,
     "dt": "2022-04-14"
   },
   {
