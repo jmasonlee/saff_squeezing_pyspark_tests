@@ -22,7 +22,7 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
         datetime(2022, 4, 14)
     )
 
-    expected_json = read_json()
+    expected_json = expected_json()
     assert data_frame_to_json(actual_df) == expected_json
     # with open("fixtures/expected.json", "w") as f:
     #     jsons = ''.join(
@@ -48,7 +48,7 @@ def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> 
         datetime(2022, 4, 14)
     )
 
-    assert data_frame_to_json(actual_df) == read_json()
+    assert data_frame_to_json(actual_df) == expected_json()
 
 
 def create_df_from_json(json_file, spark):
@@ -61,6 +61,6 @@ def data_frame_to_json(df: DataFrame) -> List:
     return output
 
 
-def read_json():
+def expected_json():
     with open("fixtures/expected.json") as f:
         return json.loads(f.read())
