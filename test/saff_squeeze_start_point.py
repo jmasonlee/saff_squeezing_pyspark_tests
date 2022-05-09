@@ -48,8 +48,7 @@ def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> 
         datetime(2022, 4, 14)
     )
 
-    expected_json = read_json()
-    assert data_frame_to_json(actual_df) == expected_json
+    assert data_frame_to_json(actual_df) == read_json()
 
 
 def create_df_from_json(json_file, spark):
