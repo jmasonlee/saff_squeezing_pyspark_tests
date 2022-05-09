@@ -31,7 +31,8 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
     #     )
     #
     #     f.write(jsons)
-def test_will_do_the_right_thing(spark: SparkSession) -> None:
+
+def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> None:
     b_reviews_df   = create_df_from_json("fixtures/browser_reviews.json", spark)
     checkin_df   = create_df_from_json("fixtures/checkin.json", spark)
     tips_df      = create_df_from_json("fixtures/tips.json", spark)
