@@ -39,7 +39,7 @@ def construct_post_pandemic_recovery_df(business_df, checkin_df, reviews_df, run
 
 
 def count_tips(tips_df, run_date):
-    tips_df = tips_df.filter(tips_df.date == run_date.date())
+    tips_df = tips_df.filter(tips_df.date == run_date)
     tips_df = tips_df.groupby("business_id").count()
     tips_df = tips_df.withColumnRenamed("count", "num_tips")
     return tips_df
@@ -58,7 +58,7 @@ def count_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date):
                   .join(checkin_df, on=['business_id', 'date'])
                   .select(mobile_reviews_df.columns))
     reviews_df = reviews_df.union(browser_reviews_df)
-    reviews_df = reviews_df.filter(reviews_df.date == run_date.date())
+    reviews_df = reviews_df.filter(reviews_df.date == run_date)
     reviews_df = reviews_df.groupby("business_id").count()
     reviews_df = reviews_df.withColumnRenamed("count", "num_reviews")
     return reviews_df
