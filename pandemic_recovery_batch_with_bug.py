@@ -18,19 +18,19 @@ def transform(business_df: DataFrame,
 
     tips_df = count_tips(tips_df, run_date)
 
-    entity_with_activity_df = business_df.join(checkin_df, on="business_id", how='left').fillna(0)
-    entity_with_activity_df = entity_with_activity_df.join(reviews_df, on="business_id", how='left').fillna(0)
-    entity_with_activity_df = entity_with_activity_df.join(tips_df, on="business_id", how='left').fillna(0)
-    entity_with_activity_df = entity_with_activity_df.withColumn("num_interactions",
-                                                                 entity_with_activity_df.num_reviews +
-                                                                 entity_with_activity_df.num_tips +
-                                                                 entity_with_activity_df.num_checkins)
-    entity_with_activity_df = entity_with_activity_df.withColumn("dt", F.lit(run_date.strftime('%Y-%m-%d')))
-    entity_with_activity_df = entity_with_activity_df.select(
+    pandemic_recovery_df = business_df.join(checkin_df, on="business_id", how='left').fillna(0)
+    pandemic_recovery_df = pandemic_recovery_df.join(reviews_df, on="business_id", how='left').fillna(0)
+    pandemic_recovery_df = pandemic_recovery_df.join(tips_df, on="business_id", how='left').fillna(0)
+    pandemic_recovery_df = pandemic_recovery_df.withColumn("num_interactions",
+                                                                 pandemic_recovery_df.num_reviews +
+                                                                 pandemic_recovery_df.num_tips +
+                                                                 pandemic_recovery_df.num_checkins)
+    pandemic_recovery_df = pandemic_recovery_df.withColumn("dt", F.lit(run_date.strftime('%Y-%m-%d')))
+    pandemic_recovery_df = pandemic_recovery_df.select(
         "business_id", "name", "num_tips", "num_checkins", "num_reviews", "num_interactions", "dt"
     )
 
-    return entity_with_activity_df
+    return pandemic_recovery_df
 
 
 def count_tips(tips_df, run_date):
