@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import List
 
 from pyspark.sql import functions as F, DataFrame
@@ -11,8 +11,7 @@ def transform(business_df: DataFrame,
               reviews_df: DataFrame,
               tips_df: DataFrame,
               mobile_reviews_df: DataFrame,
-              run_date: datetime = datetime.today()):
-
+              run_date: date = date.today()):
     reviews_df = count_reviews(checkin_df, mobile_reviews_df, reviews_df, run_date)
 
     checkin_df = count_checkins(checkin_df, run_date)
@@ -58,6 +57,7 @@ def count_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date):
     reviews_df = reviews_df.groupby("business_id").count()
     reviews_df = reviews_df.withColumnRenamed("count", "num_reviews")
     return reviews_df
+
 
 def count_dates_since_date(dates: List[str], recent_limit: datetime) -> int:
     return len(list(filter(lambda date: is_after_date(date, recent_limit), dates)))

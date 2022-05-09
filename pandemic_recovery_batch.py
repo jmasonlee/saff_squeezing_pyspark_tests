@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import List
 
 from pyspark.sql import functions as F, DataFrame
@@ -11,7 +11,7 @@ def transform(business_df: DataFrame,
               browser_reviews_df: DataFrame,
               tips_df: DataFrame,
               mobile_reviews_df: DataFrame,
-              run_date: datetime = datetime.today()):
+              run_date: date = date.today()):
 
     checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
     checkin_df = checkin_df.select(F.col("business_id"), F.explode(F.col("checkins_list")).alias("date"))
@@ -34,7 +34,7 @@ def construct_post_pandemic_recovery_df(business_df, checkin_df, reviews_df, run
                                                            pandemic_recovery_df.num_reviews +
                                                            pandemic_recovery_df.num_tips +
                                                            pandemic_recovery_df.num_checkins)
-    pandemic_recovery_df = pandemic_recovery_df.withColumn("dt", F.lit(run_date))
+    pandemic_recovery_df = pandemic_recovery_df.withColumn("dt", F.lit(run_date.strftime("%Y-%m-%d")))
     pandemic_recovery_df = pandemic_recovery_df.select(
         "business_id", "name", "num_tips", "num_checkins", "num_reviews", "num_interactions", "dt"
     )
