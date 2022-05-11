@@ -55,7 +55,7 @@ def count_checkins(checkin_df, run_date):
 
 def count_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date):
     reviews_df = (mobile_reviews_df
-                  .join(checkin_df, on=['business_id', 'date'])
+                  .join(checkin_df, on=['business_id', 'date', 'user_id'])
                   .select(mobile_reviews_df.columns))
     reviews_df = reviews_df.union(browser_reviews_df)
     reviews_df = reviews_df.filter(reviews_df.date == run_date.date())
