@@ -22,8 +22,7 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
         datetime(2022, 4, 14)
     )
 
-    expected_json = expected_json()
-    assert data_frame_to_json(actual_df) == expected_json
+    assert data_frame_to_json(actual_df) == expected_json()
     # with open("fixtures/expected.json", "w") as f:
     #     jsons = ''.join(
     #         json.dumps(line) if line else line
