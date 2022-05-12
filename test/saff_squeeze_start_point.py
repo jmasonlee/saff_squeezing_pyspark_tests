@@ -39,8 +39,8 @@ def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> 
     tips_df      = create_df_from_json("fixtures/tips.json", spark)
     business_df  = create_df_from_json("fixtures/business.json", spark)
     m_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
-
     date = datetime(2022, 4, 14)
+
     checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
     checkin_df = checkin_df.withColumn("date", F.explode(checkin_df.checkins_list))
     checkin_df = checkin_df.withColumn("date", F.trim(checkin_df.date))
@@ -50,6 +50,7 @@ def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> 
         F.col("date")
     )
     reviews_df = count_reviews(checkin_df, m_reviews_df, b_reviews_df, date)
+
     business_with_mobile_review_only = data_frame_to_json(reviews_df)[2]
     assert business_with_mobile_review_only["num_reviews"] == 1
 
