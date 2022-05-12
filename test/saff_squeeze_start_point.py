@@ -67,7 +67,7 @@ def test_keeps_mobile_reviews_without_matching_checkins(
     assert business_with_mobile_review_only["num_reviews"] == 1
 
 
-def reviews_schema():
+def reviews_schema() -> StructType:
     return StructType([StructField('user_id', StringType()),
                        StructField('business_id', StringType()),
                        StructField('date', StringType())])
