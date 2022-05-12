@@ -5,7 +5,7 @@ from pyspark.sql import SparkSession, functions as F
 from pandemic_recovery_batch import create_checkin_df_with_one_date_per_row, count_reviews, count_checkins, count_tips
 from test.saff_squeeze_start_point import create_df_from_json, data_frame_to_json
 
-
+############################# SAFF SQUEEZE #################################
 def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     b_reviews_df = create_df_from_json("fixtures/browser_reviews.json", spark)
     checkin_df   = create_df_from_json("fixtures/checkin.json", spark)
@@ -18,11 +18,16 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     checkin_df = count_checkins(checkin_df, date)
 
     pandemic_recovery_df = business_df.join(checkin_df, on="business_id", how='left').fillna(0)
+    print("Pandemic Recovery")
+    pandemic_recovery_df.show()
+    print("Reviews")
+    reviews_df.show()
     pandemic_recovery_df = pandemic_recovery_df.join(reviews_df, on="business_id", how='left').fillna(0)
     inglewood_pizza = data_frame_to_json(pandemic_recovery_df)[6]
+    assert inglewood_pizza["business_id"] == "mpf3x-BjTdTEA3yCZrAYPw"
     assert inglewood_pizza["name"] == "Inglewood Pizza"
     assert inglewood_pizza["num_reviews"] == 1
-
+############################# SAFF SQUEEZE #################################
 
 
 
