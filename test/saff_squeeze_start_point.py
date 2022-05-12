@@ -48,7 +48,10 @@ def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> 
     business_with_mobile_review_only = data_frame_to_json(reviews_df)[2]
     assert business_with_mobile_review_only["num_reviews"] == 1
 
-def test_create_checkin_df_with_one_date_per_row(spark: SparkSession):
+def test_create_checkin_df_with_one_date_per_row(
+        spark: SparkSession,
+        checkin_df_with_one_date_per_row
+):
     dates = "2014-04-12 23:04:47,2022-04-14 00:31:02"
     input_df = spark.createDataFrame(
             [("my_business_id", "my_user_id", dates)],
@@ -60,9 +63,10 @@ def test_create_checkin_df_with_one_date_per_row(spark: SparkSession):
                 ]
             ))
     output_df = create_checkin_df_with_one_date_per_row(input_df)
-    expected_output = checkin_df_with_one_date_per_row(spark)
+    expected_output = checkin_df_with_one_date_per_row
     assert_df_equality(output_df, expected_output)
 
+@pytest.fixture
 def checkin_df_with_one_date_per_row(spark: SparkSession) -> DataFrame:
     return spark.createDataFrame(
         [
