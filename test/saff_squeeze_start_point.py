@@ -80,7 +80,7 @@ def test_only_counts_mobile_reviews_without_matching_checkins(
     assert_column_equality(reviews_df, "num_reviews", "expected_num_reviews")
 
 
-def empty_reviews_df(reviews_schema, spark):
+def empty_reviews_df(reviews_schema: StructType, spark:SparkSession) -> DataFrame:
     return spark.createDataFrame([], reviews_schema)
 
 
