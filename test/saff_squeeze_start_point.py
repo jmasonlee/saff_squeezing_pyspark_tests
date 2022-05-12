@@ -57,8 +57,10 @@ def test_keeps_mobile_reviews_without_matching_checkins(
         reviews_schema: StructType
 ) -> None:
     b_reviews_df = spark.createDataFrame([], reviews_schema)
+
+    mobile_review_only = "mobile_review_only_business_id"
     m_reviews_df = spark.createDataFrame(
-        [("my_user_id", "my_business_id", "2022-04-14 00:01:03")],
+        [("my_user_id", mobile_review_only, "2022-04-14 00:01:03")],
         reviews_schema
     )
     date = datetime(2022, 4, 14)
@@ -67,7 +69,7 @@ def test_keeps_mobile_reviews_without_matching_checkins(
 
 
     reviews_df = reviews_df.withColumn("expected_num_reviews",
-                                       when(reviews_df.business_id == "my_business_id", 1)
+                                       when(reviews_df.business_id == mobile_review_only, 1)
                                        .otherwise(None))
     assert_column_equality(reviews_df, "num_reviews", "expected_num_reviews")
 
