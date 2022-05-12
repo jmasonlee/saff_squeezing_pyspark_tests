@@ -5,7 +5,7 @@ from typing import List
 import pytest
 from chispa import assert_df_equality
 from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.types import StructType, StructField, StringType
+from pyspark.sql.types import StructType, StructField, StringType, NumericType
 
 from pandemic_recovery_batch import transform, count_reviews, create_checkin_df_with_one_date_per_row
 
@@ -54,7 +54,22 @@ def test_keeps_mobile_reviews_without_matching_checkins(
         spark: SparkSession,
         checkin_df_with_one_date_per_row: DataFrame
 ) -> None:
-    b_reviews_df = create_df_from_json("fixtures/browser_reviews.json", spark)
+    b_reviews_df = spark.createDataFrame(
+        [],
+        StructType(
+            [
+                StructField('review_id', StringType()),
+                StructField('user_id', StringType()),
+                StructField('business_id', StringType()),
+                StructField('stars', StringType()),
+                StructField('useful', StringType()),
+                StructField('funny', StringType()),
+                StructField('cool', StringType()),
+                StructField('text', StringType()),
+                StructField('date', StringType()),
+            ]
+        )
+    )
     m_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
     date = datetime(2022, 4, 14)
 
