@@ -54,13 +54,13 @@ def test_keeps_mobile_reviews_without_matching_checkins(
         spark: SparkSession,
         checkin_df_with_one_date_per_row: DataFrame
 ) -> None:
-    reviews_schema = StructType([StructField('user_id', StringType()),
+    zz_reviews_schema = StructType([StructField('user_id', StringType()),
                               StructField('business_id', StringType()),
                               StructField('date', StringType())])
-    b_reviews_df = spark.createDataFrame([],reviews_schema)
+    b_reviews_df = spark.createDataFrame([],zz_reviews_schema)
     m_reviews_df = spark.createDataFrame(
         [("my_user_id", "my_business_id", "2022-04-14 00:01:03")],
-        reviews_schema
+        zz_reviews_schema
     )
     date = datetime(2022, 4, 14)
 
