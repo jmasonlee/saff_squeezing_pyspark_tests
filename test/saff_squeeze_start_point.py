@@ -24,13 +24,17 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
 
     expected_json = read_json()
     assert data_frame_to_json(actual_df) == expected_json
-    # with open("fixtures/expected.json", "w") as f:
-    #     jsons = ''.join(
-    #         json.dumps(line) if line else line
-    #         for line in data_frame_to_json(actual_df)
-    #     )
-    #
-    #     f.write(jsons)
+    #save_results_to_expected(actual_df)
+
+
+def save_results_to_expected(actual_df):
+    with open("fixtures/expected.json", "w") as f:
+        jsons = ''.join(
+            json.dumps(line) if line else line
+            for line in data_frame_to_json(actual_df)
+        )
+
+        f.write(jsons)
 
 
 def create_df_from_json(json_file, spark):
