@@ -10,6 +10,9 @@ from pyspark.sql.types import StructType, StructField, StringType, NumericType, 
 
 from pandemic_recovery_batch import transform, count_reviews, create_checkin_df_with_one_date_per_row
 
+@pytest.fixture()
+def empty_reviews_df(reviews_schema: StructType, spark:SparkSession) -> DataFrame:
+    return spark.createDataFrame([], reviews_schema)
 
 @pytest.fixture
 def checkin_df_with_one_date_per_row(spark: SparkSession) -> DataFrame:
@@ -79,10 +82,6 @@ def test_only_counts_mobile_reviews_without_matching_checkins(
                                        .when(reviews_df.business_id == has_mobile_review_and_checkin, 0)
                                        .otherwise(None))
     assert_column_equality(reviews_df, "num_reviews", "expected_num_reviews")
-
-@pytest.fixture()
-def empty_reviews_df(reviews_schema: StructType, spark:SparkSession) -> DataFrame:
-    return spark.createDataFrame([], reviews_schema)
 
 
 @pytest.fixture()
