@@ -36,7 +36,7 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
     #     f.write(jsons)
 
 def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> None:
-    b_reviews_df   = create_df_from_json("fixtures/browser_reviews.json", spark)
+    b_reviews_df = create_df_from_json("fixtures/browser_reviews.json", spark)
     checkin_df   = create_df_from_json("fixtures/checkin.json", spark)
     m_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
     date = datetime(2022, 4, 14)
@@ -59,7 +59,12 @@ def test_create_checkin_df_with_one_date_per_row(spark: SparkSession):
                 ]
             ))
     output_df = create_checkin_df_with_one_date_per_row(input_df)
-    expected_output = spark.createDataFrame(
+    expected_output = checkin_df_with_one_date_per_row(spark)
+    assert_df_equality(output_df, expected_output)
+
+
+def checkin_df_with_one_date_per_row(spark):
+    return spark.createDataFrame(
         [
             ("my_business_id", "my_user_id", "2014-04-12 23:04:47"),
             ("my_business_id", "my_user_id", "2022-04-14 00:31:02")
@@ -71,7 +76,7 @@ def test_create_checkin_df_with_one_date_per_row(spark: SparkSession):
                 StructField('date', StringType())
             ]
         ))
-    assert_df_equality(output_df, expected_output)
+
 
 def create_checkin_df_with_one_date_per_row(checkin_df):
     checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
