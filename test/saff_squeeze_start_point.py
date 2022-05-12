@@ -26,11 +26,12 @@ def checkin_df_with_one_date_per_row(spark: SparkSession) -> DataFrame:
             ]
         ))
 
+
 def test_will_do_the_right_thing(spark: SparkSession) -> None:
-    b_reviews_df   = create_df_from_json("fixtures/browser_reviews.json", spark)
-    checkin_df   = create_df_from_json("fixtures/checkin.json", spark)
-    tips_df      = create_df_from_json("fixtures/tips.json", spark)
-    business_df  = create_df_from_json("fixtures/business.json", spark)
+    b_reviews_df = create_df_from_json("fixtures/browser_reviews.json", spark)
+    checkin_df = create_df_from_json("fixtures/checkin.json", spark)
+    tips_df = create_df_from_json("fixtures/tips.json", spark)
+    business_df = create_df_from_json("fixtures/business.json", spark)
     m_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
 
     actual_df = transform(
@@ -51,6 +52,7 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
     #
     #     f.write(jsons)
 
+
 def test_keeps_mobile_reviews_without_matching_checkins(
         spark: SparkSession,
         checkin_df_with_one_date_per_row: DataFrame,
@@ -67,11 +69,11 @@ def test_keeps_mobile_reviews_without_matching_checkins(
 
     reviews_df = count_reviews(checkin_df_with_one_date_per_row, m_reviews_df, b_reviews_df, date)
 
-
     reviews_df = reviews_df.withColumn("expected_num_reviews",
                                        when(reviews_df.business_id == mobile_review_only, 1)
                                        .otherwise(None))
     assert_column_equality(reviews_df, "num_reviews", "expected_num_reviews")
+
 
 @pytest.fixture()
 def reviews_schema() -> StructType:
@@ -86,14 +88,14 @@ def test_create_checkin_df_with_one_date_per_row(
 ):
     dates = "2014-04-12 23:04:47,2022-04-14 00:31:02"
     input_df = spark.createDataFrame(
-            [("my_business_id", "my_user_id", dates)],
-            StructType(
-                [
-                    StructField('business_id', StringType()),
-                    StructField('user_id', StringType()),
-                    StructField('date', StringType())
-                ]
-            ))
+        [("my_business_id", "my_user_id", dates)],
+        StructType(
+            [
+                StructField('business_id', StringType()),
+                StructField('user_id', StringType()),
+                StructField('date', StringType())
+            ]
+        ))
     output_df = create_checkin_df_with_one_date_per_row(input_df)
     expected_output = checkin_df_with_one_date_per_row
     assert_df_equality(output_df, expected_output)
