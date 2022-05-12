@@ -50,13 +50,16 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
     #
     #     f.write(jsons)
 
-def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> None:
+def test_keeps_mobile_reviews_without_matching_checkins(
+        spark: SparkSession,
+        checkin_df_with_one_date_per_row: DataFrame
+) -> None:
     b_reviews_df = create_df_from_json("fixtures/browser_reviews.json", spark)
     checkin_df   = create_df_from_json("fixtures/checkin.json", spark)
     m_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
     date = datetime(2022, 4, 14)
 
-    checkin_df = create_checkin_df_with_one_date_per_row(checkin_df)
+    checkin_df = checkin_df_with_one_date_per_row
     reviews_df = count_reviews(checkin_df, m_reviews_df, b_reviews_df, date)
 
     business_with_mobile_review_only = data_frame_to_json(reviews_df)[2]
