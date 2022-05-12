@@ -22,4 +22,6 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
         datetime(2022, 4, 14)
     )
 
-    assert data_frame_to_json(actual_df) == read_json()
+    inglewood_pizza = data_frame_to_json(actual_df)[6]
+    assert inglewood_pizza["name"] == "Inglewood Pizza"
+    assert inglewood_pizza["num_reviews"] == 1
