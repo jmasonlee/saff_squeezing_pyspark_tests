@@ -17,7 +17,7 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     checkin_df = create_checkin_df_with_one_date_per_row(checkin_df)
     reviews_df = count_reviews(checkin_df, m_reviews_df, b_reviews_df, date)
     checkin_df = count_checkins(checkin_df, date)
-    tips_df = count_tips(tips_df, date)
+
     pandemic_recovery_df = business_df.join(checkin_df, on="business_id", how='left').fillna(0)
     pandemic_recovery_df = pandemic_recovery_df.join(reviews_df, on="business_id", how='left').fillna(0)
     inglewood_pizza = data_frame_to_json(pandemic_recovery_df)[6]
