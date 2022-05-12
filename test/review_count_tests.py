@@ -23,7 +23,7 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     print("Reviews")
     reviews_df.show()
     pandemic_recovery_df = pandemic_recovery_df.join(reviews_df, on="business_id", how='left').fillna(0)
-    inglewood_pizza = data_frame_to_json(pandemic_recovery_df)[6]
+    inglewood_pizza = data_frame_to_json(reviews_df)[6]
     assert inglewood_pizza["business_id"] == "mpf3x-BjTdTEA3yCZrAYPw"
     assert inglewood_pizza["name"] == "Inglewood Pizza"
     assert inglewood_pizza["num_reviews"] == 1
