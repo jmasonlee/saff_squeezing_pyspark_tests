@@ -52,9 +52,10 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
 
 def test_keeps_mobile_reviews_without_matching_checkins(
         spark: SparkSession,
-        checkin_df_with_one_date_per_row: DataFrame
+        checkin_df_with_one_date_per_row: DataFrame,
+        reviews_schema: StructType
 ) -> None:
-    zz_reviews_schema = reviews_schema()
+    zz_reviews_schema = reviews_schema
     b_reviews_df = spark.createDataFrame([],zz_reviews_schema)
     m_reviews_df = spark.createDataFrame(
         [("my_user_id", "my_business_id", "2022-04-14 00:01:03")],
@@ -66,7 +67,7 @@ def test_keeps_mobile_reviews_without_matching_checkins(
     business_with_mobile_review_only = data_frame_to_json(reviews_df)[0]
     assert business_with_mobile_review_only["num_reviews"] == 1
 
-
+@pytest.fixture()
 def reviews_schema() -> StructType:
     return StructType([StructField('user_id', StringType()),
                        StructField('business_id', StringType()),
