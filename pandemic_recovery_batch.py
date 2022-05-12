@@ -71,3 +71,13 @@ def count_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date):
     return reviews_df
 
 
+def create_checkin_df_with_one_date_per_row(checkin_df):
+    checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
+    checkin_df = checkin_df.withColumn("date", F.explode(checkin_df.checkins_list))
+    checkin_df = checkin_df.withColumn("date", F.trim(checkin_df.date))
+    checkin_df = checkin_df.select(
+        F.col("business_id"),
+        F.col("user_id"),
+        F.col("date")
+    )
+    return checkin_df

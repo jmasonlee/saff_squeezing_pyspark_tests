@@ -4,11 +4,11 @@ from typing import List
 
 import pytest
 from chispa import assert_df_equality
-from pyspark.sql import DataFrame, SparkSession, functions as F
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructType, StructField, StringType
 
-from pandemic_recovery_batch import transform, count_reviews, count_checkins, \
-    count_tips
+from pandemic_recovery_batch import transform, count_reviews, create_checkin_df_with_one_date_per_row
+
 
 @pytest.fixture
 def checkin_df_with_one_date_per_row(spark: SparkSession) -> DataFrame:
@@ -79,18 +79,6 @@ def test_create_checkin_df_with_one_date_per_row(
     output_df = create_checkin_df_with_one_date_per_row(input_df)
     expected_output = checkin_df_with_one_date_per_row
     assert_df_equality(output_df, expected_output)
-
-
-def create_checkin_df_with_one_date_per_row(checkin_df):
-    checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
-    checkin_df = checkin_df.withColumn("date", F.explode(checkin_df.checkins_list))
-    checkin_df = checkin_df.withColumn("date", F.trim(checkin_df.date))
-    checkin_df = checkin_df.select(
-        F.col("business_id"),
-        F.col("user_id"),
-        F.col("date")
-    )
-    return checkin_df
 
 
 def create_df_from_json(json_file, spark):
