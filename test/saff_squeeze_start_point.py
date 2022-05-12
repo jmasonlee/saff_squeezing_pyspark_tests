@@ -51,7 +51,6 @@ def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> 
     )
     reviews_df = count_reviews(checkin_df, m_reviews_df, b_reviews_df, date)
     checkin_df = count_checkins(checkin_df, date)
-    tips_df = count_tips(tips_df, date)
     business_with_mobile_review_only = data_frame_to_json(reviews_df)[2]
     assert business_with_mobile_review_only["num_reviews"] == 1
 
