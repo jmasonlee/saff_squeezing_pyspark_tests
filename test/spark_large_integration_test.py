@@ -2,11 +2,12 @@ import json
 from datetime import datetime
 from typing import List
 
+import pytest
 from pyspark.sql import DataFrame, SparkSession
 
 from pandemic_recovery_batch_with_bug import transform
 
-
+@pytest.mark.skip
 def test_will_do_the_right_thing(spark: SparkSession) -> None:
     b_reviews_df   = create_df_from_json("fixtures/browser_reviews.json", spark)
     checkin_df   = create_df_from_json("fixtures/checkin.json", spark)
