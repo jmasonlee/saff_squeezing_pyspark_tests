@@ -14,7 +14,7 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
 
     checkin_df = create_df_from_json("fixtures/checkin.json", spark)
     checkin_df = create_checkin_df_with_one_date_per_row(checkin_df)
-    save_results_to_expected(checkin_df, "checkins_exploded")
+    checkin_df = create_df_from_json("fixtures/checkins_exploded.json", spark)
     reviews_df = count_reviews(checkin_df, m_reviews_df, b_reviews_df, date)  # <- This is what we care about
 
 
