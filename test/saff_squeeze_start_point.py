@@ -4,7 +4,7 @@ from typing import List
 
 from pyspark.sql import DataFrame, SparkSession, functions as F
 
-from pandemic_recovery_batch import transform, construct_post_pandemic_recovery_df, count_reviews, count_checkins, \
+from pandemic_recovery_batch import transform, count_reviews, count_checkins, \
     count_tips
 
 
@@ -52,9 +52,18 @@ def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> 
     reviews_df = count_reviews(checkin_df, m_reviews_df, b_reviews_df, date)
     checkin_df = count_checkins(checkin_df, date)
     tips_df = count_tips(tips_df, date)
-    actual_df = construct_post_pandemic_recovery_df(
-        business_df, checkin_df, reviews_df, date, tips_df
+    pandemic_recovery_df = business_df.join(checkin_df, on="business_id", how='left').fillna(0)
+    pandemic_recovery_df = pandemic_recovery_df.join(reviews_df, on="business_id", how='left').fillna(0)
+    pandemic_recovery_df = pandemic_recovery_df.join(tips_df, on="business_id", how='left').fillna(0)
+    pandemic_recovery_df = pandemic_recovery_df.withColumn("num_interactions",
+                                                           pandemic_recovery_df.num_reviews +
+                                                           pandemic_recovery_df.num_tips +
+                                                           pandemic_recovery_df.num_checkins)
+    pandemic_recovery_df = pandemic_recovery_df.withColumn("dt", F.lit(date.strftime("%Y-%m-%d")))
+    pandemic_recovery_df = pandemic_recovery_df.select(
+        "business_id", "name", "num_tips", "num_checkins", "num_reviews", "num_interactions", "dt"
     )
+    actual_df = pandemic_recovery_df
 
     business_with_mobile_review_only = data_frame_to_json(actual_df)[2]
     assert business_with_mobile_review_only["num_reviews"] == 1
