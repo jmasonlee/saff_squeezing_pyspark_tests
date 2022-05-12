@@ -62,9 +62,6 @@ def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> 
     pandemic_recovery_df = pandemic_recovery_df.withColumn("dt", F.lit(date.strftime("%Y-%m-%d")))
     business_with_mobile_review_only = data_frame_to_json(pandemic_recovery_df)[2]
     assert business_with_mobile_review_only["num_reviews"] == 1
-    pandemic_recovery_df = pandemic_recovery_df.select(
-        "business_id", "name", "num_tips", "num_checkins", "num_reviews", "num_interactions", "dt"
-    )
 
 
 def create_df_from_json(json_file, spark):
