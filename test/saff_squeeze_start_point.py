@@ -53,7 +53,7 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
     #     f.write(jsons)
 
 
-def test_keeps_mobile_reviews_without_matching_checkins(
+def test_only_counts_mobile_reviews_without_matching_checkins(
         spark: SparkSession,
         checkin_df_with_one_date_per_row: DataFrame,
         reviews_schema: StructType
@@ -61,8 +61,12 @@ def test_keeps_mobile_reviews_without_matching_checkins(
     b_reviews_df = spark.createDataFrame([], reviews_schema)
 
     mobile_review_only = "mobile_review_only_business_id"
+    has_mobile_review_and_checkin = "my_business_id"
     m_reviews_df = spark.createDataFrame(
-        [("my_user_id", mobile_review_only, "2022-04-14 00:01:03")],
+        [
+            ("my_user_id", mobile_review_only, "2022-04-14 00:01:03"),
+            ("my_user_id", has_mobile_review_and_checkin, "2022-04-14 00:31:02")
+        ],
         reviews_schema
     )
     date = datetime(2022, 4, 14)
@@ -71,6 +75,7 @@ def test_keeps_mobile_reviews_without_matching_checkins(
 
     reviews_df = reviews_df.withColumn("expected_num_reviews",
                                        when(reviews_df.business_id == mobile_review_only, 1)
+                                       .when(reviews_df.business_id == has_mobile_review_and_checkin, 0)
                                        .otherwise(None))
     assert_column_equality(reviews_df, "num_reviews", "expected_num_reviews")
 
