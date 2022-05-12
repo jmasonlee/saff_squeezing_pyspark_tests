@@ -54,22 +54,12 @@ def test_keeps_mobile_reviews_without_matching_checkins(
         spark: SparkSession,
         checkin_df_with_one_date_per_row: DataFrame
 ) -> None:
-    b_reviews_df = spark.createDataFrame(
-        [],
-        StructType(
-            [
-                StructField('review_id', StringType()),
-                StructField('user_id', StringType()),
-                StructField('business_id', StringType()),
-                StructField('stars', StringType()),
-                StructField('useful', StringType()),
-                StructField('funny', StringType()),
-                StructField('cool', StringType()),
-                StructField('text', StringType()),
-                StructField('date', StringType()),
-            ]
-        )
-    )
+    reviews_schema = StructType([StructField('review_id', StringType()), StructField('user_id', StringType()),
+                              StructField('business_id', StringType()), StructField('stars', StringType()),
+                              StructField('useful', StringType()), StructField('funny', StringType()),
+                              StructField('cool', StringType()), StructField('text', StringType()),
+                              StructField('date', StringType()), ])
+    b_reviews_df = spark.createDataFrame([],reviews_schema)
     m_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
     date = datetime(2022, 4, 14)
 
