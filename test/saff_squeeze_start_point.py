@@ -2,7 +2,9 @@ import json
 from datetime import datetime
 from typing import List
 
+from chispa import assert_df_equality
 from pyspark.sql import DataFrame, SparkSession, functions as F
+from pyspark.sql.types import StructType, StructField, StringType
 
 from pandemic_recovery_batch import transform, count_reviews, count_checkins, \
     count_tips
@@ -45,6 +47,31 @@ def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> 
     business_with_mobile_review_only = data_frame_to_json(reviews_df)[2]
     assert business_with_mobile_review_only["num_reviews"] == 1
 
+def test_create_checkin_df_with_one_date_per_row(spark: SparkSession):
+    dates = "2014-04-12 23:04:47,2022-04-14 00:31:02"
+    input_df = spark.createDataFrame(
+            [("my_business_id", "my_user_id", dates)],
+            StructType(
+                [
+                    StructField('business_id', StringType()),
+                    StructField('user_id', StringType()),
+                    StructField('date', StringType())
+                ]
+            ))
+    output_df = create_checkin_df_with_one_date_per_row(input_df)
+    expected_output = spark.createDataFrame(
+        [
+            ("my_business_id", "my_user_id", "2014-04-12 23:04:47"),
+            ("my_business_id", "my_user_id", "2022-04-14 00:31:02")
+        ],
+        StructType(
+            [
+                StructField('business_id', StringType()),
+                StructField('user_id', StringType()),
+                StructField('date', StringType())
+            ]
+        ))
+    assert_df_equality(output_df, expected_output)
 
 def create_checkin_df_with_one_date_per_row(checkin_df):
     checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
