@@ -47,7 +47,8 @@ def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> 
         datetime(2022, 4, 14)
     )
 
-    assert data_frame_to_json(actual_df)[2]["num_reviews"] == 1
+    business_with_mobile_review_only = data_frame_to_json(actual_df)[2]
+    assert business_with_mobile_review_only["num_reviews"] == 1
 
 
 def create_df_from_json(json_file, spark):
