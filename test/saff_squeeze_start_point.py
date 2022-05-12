@@ -3,8 +3,9 @@ from datetime import datetime
 from typing import List
 
 import pytest
-from chispa import assert_df_equality
+from chispa import assert_df_equality, assert_column_equality
 from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql.functions import col, when
 from pyspark.sql.types import StructType, StructField, StringType, NumericType, LongType
 
 from pandemic_recovery_batch import transform, count_reviews, create_checkin_df_with_one_date_per_row
@@ -64,13 +65,11 @@ def test_keeps_mobile_reviews_without_matching_checkins(
 
     reviews_df = count_reviews(checkin_df_with_one_date_per_row, m_reviews_df, b_reviews_df, date)
 
-    expected_df = spark.createDataFrame([("my_business_id", 1)],
-                                               StructType([
-                                                   StructField('business_id', StringType()),
-                                                   StructField('num_reviews', LongType(), False)
-                                               ]))
 
-    assert_df_equality(reviews_df, expected_df)
+    reviews_df = reviews_df.withColumn("expected_num_reviews",
+                                       when(reviews_df.business_id == "my_business_id", 1)
+                                       .otherwise(None))
+    assert_column_equality(reviews_df, "num_reviews", "expected_num_reviews")
 
 @pytest.fixture()
 def reviews_schema() -> StructType:
