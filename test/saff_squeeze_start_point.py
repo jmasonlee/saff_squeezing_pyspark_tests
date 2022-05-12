@@ -45,7 +45,6 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
 
     expected_json = read_json()
     assert data_frame_to_json(actual_df) == expected_json
-    #save_results_to_expected(actual_df)
 
 
 
