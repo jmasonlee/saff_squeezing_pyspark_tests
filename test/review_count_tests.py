@@ -28,7 +28,6 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     inglewood_pizza = data_frame_to_json(pandemic_recovery_df)[6]
     assert inglewood_pizza["name"] == "Inglewood Pizza"
     assert inglewood_pizza["num_reviews"] == 1
-    pandemic_recovery_df = pandemic_recovery_df.withColumn("dt", F.lit(date.strftime("%Y-%m-%d")))
 
 
 
