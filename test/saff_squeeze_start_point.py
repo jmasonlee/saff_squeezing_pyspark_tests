@@ -56,9 +56,10 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
 def test_only_counts_mobile_reviews_without_matching_checkins(
         spark: SparkSession,
         checkin_df_with_one_date_per_row: DataFrame,
-        reviews_schema: StructType
+        reviews_schema: StructType,
+        empty_reviews_df: DataFrame
 ) -> None:
-    b_reviews_df = empty_reviews_df(reviews_schema, spark)
+    b_reviews_df = empty_reviews_df
 
     mobile_review_only = "mobile_review_only_business_id"
     has_mobile_review_and_checkin = "my_business_id"
@@ -79,7 +80,7 @@ def test_only_counts_mobile_reviews_without_matching_checkins(
                                        .otherwise(None))
     assert_column_equality(reviews_df, "num_reviews", "expected_num_reviews")
 
-
+@pytest.fixture()
 def empty_reviews_df(reviews_schema: StructType, spark:SparkSession) -> DataFrame:
     return spark.createDataFrame([], reviews_schema)
 
