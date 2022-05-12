@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from typing import List
 
+import pytest
 from chispa import assert_df_equality
 from pyspark.sql import DataFrame, SparkSession, functions as F
 from pyspark.sql.types import StructType, StructField, StringType
@@ -62,8 +63,7 @@ def test_create_checkin_df_with_one_date_per_row(spark: SparkSession):
     expected_output = checkin_df_with_one_date_per_row(spark)
     assert_df_equality(output_df, expected_output)
 
-
-def checkin_df_with_one_date_per_row(spark):
+def checkin_df_with_one_date_per_row(spark: SparkSession) -> DataFrame:
     return spark.createDataFrame(
         [
             ("my_business_id", "my_user_id", "2014-04-12 23:04:47"),
