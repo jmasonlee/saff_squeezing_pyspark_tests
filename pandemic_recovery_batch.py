@@ -13,19 +13,10 @@ def transform(business_df: DataFrame,
               mobile_reviews_df: DataFrame,
               run_date: datetime = datetime.today()):
 
-    checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
-    checkin_df = checkin_df.withColumn("date", F.explode(checkin_df.checkins_list))
-    checkin_df = checkin_df.withColumn("date", F.trim(checkin_df.date))
-    checkin_df = checkin_df.select(
-        F.col("business_id"),
-        F.col("user_id"),
-        F.col("date")
-    )
-
+    checkin_df = create_checkin_df_with_one_date_per_row(checkin_df)
 
     reviews_df = count_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date)
     checkin_df = count_checkins(checkin_df, run_date)
-
     tips_df = count_tips(tips_df, run_date)
 
     return construct_post_pandemic_recovery_df(
@@ -69,5 +60,16 @@ def count_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date):
     reviews_df = reviews_df.groupby("business_id").count()
     reviews_df = reviews_df.withColumnRenamed("count", "num_reviews")
     return reviews_df
+
+def create_checkin_df_with_one_date_per_row(checkin_df):
+    checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
+    checkin_df = checkin_df.withColumn("date", F.explode(checkin_df.checkins_list))
+    checkin_df = checkin_df.withColumn("date", F.trim(checkin_df.date))
+    checkin_df = checkin_df.select(
+        F.col("business_id"),
+        F.col("user_id"),
+        F.col("date")
+    )
+    return checkin_df
 
 
