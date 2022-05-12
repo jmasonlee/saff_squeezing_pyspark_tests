@@ -5,7 +5,7 @@ from typing import List
 import pytest
 from chispa import assert_df_equality
 from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.types import StructType, StructField, StringType, NumericType
+from pyspark.sql.types import StructType, StructField, StringType, NumericType, LongType
 
 from pandemic_recovery_batch import transform, count_reviews, create_checkin_df_with_one_date_per_row
 
@@ -63,8 +63,14 @@ def test_keeps_mobile_reviews_without_matching_checkins(
     date = datetime(2022, 4, 14)
 
     reviews_df = count_reviews(checkin_df_with_one_date_per_row, m_reviews_df, b_reviews_df, date)
-    business_with_mobile_review_only = data_frame_to_json(reviews_df)[0]
-    assert business_with_mobile_review_only["num_reviews"] == 1
+
+    expected_df = spark.createDataFrame([("my_business_id", 1)],
+                                               StructType([
+                                                   StructField('business_id', StringType()),
+                                                   StructField('num_reviews', LongType(), False)
+                                               ]))
+
+    assert_df_equality(reviews_df, expected_df)
 
 @pytest.fixture()
 def reviews_schema() -> StructType:
