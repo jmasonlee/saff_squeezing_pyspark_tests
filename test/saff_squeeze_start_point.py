@@ -10,6 +10,20 @@ from pyspark.sql.types import StructType, StructField, StringType
 from pandemic_recovery_batch import transform, count_reviews, count_checkins, \
     count_tips
 
+@pytest.fixture
+def checkin_df_with_one_date_per_row(spark: SparkSession) -> DataFrame:
+    return spark.createDataFrame(
+        [
+            ("my_business_id", "my_user_id", "2014-04-12 23:04:47"),
+            ("my_business_id", "my_user_id", "2022-04-14 00:31:02")
+        ],
+        StructType(
+            [
+                StructField('business_id', StringType()),
+                StructField('user_id', StringType()),
+                StructField('date', StringType())
+            ]
+        ))
 
 def test_will_do_the_right_thing(spark: SparkSession) -> None:
     b_reviews_df   = create_df_from_json("fixtures/browser_reviews.json", spark)
@@ -65,21 +79,6 @@ def test_create_checkin_df_with_one_date_per_row(
     output_df = create_checkin_df_with_one_date_per_row(input_df)
     expected_output = checkin_df_with_one_date_per_row
     assert_df_equality(output_df, expected_output)
-
-@pytest.fixture
-def checkin_df_with_one_date_per_row(spark: SparkSession) -> DataFrame:
-    return spark.createDataFrame(
-        [
-            ("my_business_id", "my_user_id", "2014-04-12 23:04:47"),
-            ("my_business_id", "my_user_id", "2022-04-14 00:31:02")
-        ],
-        StructType(
-            [
-                StructField('business_id', StringType()),
-                StructField('user_id', StringType()),
-                StructField('date', StringType())
-            ]
-        ))
 
 
 def create_checkin_df_with_one_date_per_row(checkin_df):
