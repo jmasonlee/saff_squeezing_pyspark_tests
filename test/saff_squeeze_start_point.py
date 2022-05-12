@@ -2,9 +2,11 @@ import json
 from datetime import datetime
 from typing import List
 
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame, SparkSession, functions as F
 
-from pandemic_recovery_batch import transform
+from pandemic_recovery_batch import transform, construct_post_pandemic_recovery_df, count_reviews, count_checkins, \
+    count_tips
+
 
 def test_will_do_the_right_thing(spark: SparkSession) -> None:
     b_reviews_df   = create_df_from_json("fixtures/browser_reviews.json", spark)
@@ -38,13 +40,20 @@ def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> 
     business_df  = create_df_from_json("fixtures/business.json", spark)
     m_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
 
-    actual_df = transform(
-        business_df,
-        checkin_df,
-        b_reviews_df,
-        tips_df,
-        m_reviews_df,
-        datetime(2022, 4, 14)
+    date = datetime(2022, 4, 14)
+    checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
+    checkin_df = checkin_df.withColumn("date", F.explode(checkin_df.checkins_list))
+    checkin_df = checkin_df.withColumn("date", F.trim(checkin_df.date))
+    checkin_df = checkin_df.select(
+        F.col("business_id"),
+        F.col("user_id"),
+        F.col("date")
+    )
+    reviews_df = count_reviews(checkin_df, m_reviews_df, b_reviews_df, date)
+    checkin_df = count_checkins(checkin_df, date)
+    tips_df = count_tips(tips_df, date)
+    actual_df = construct_post_pandemic_recovery_df(
+        business_df, checkin_df, reviews_df, date, tips_df
     )
 
     business_with_mobile_review_only = data_frame_to_json(actual_df)[2]
