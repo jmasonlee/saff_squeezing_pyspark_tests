@@ -37,7 +37,6 @@ def test_keeps_mobile_reviews_without_matching_checkins(spark: SparkSession) -> 
     b_reviews_df   = create_df_from_json("fixtures/browser_reviews.json", spark)
     checkin_df   = create_df_from_json("fixtures/checkin.json", spark)
     tips_df      = create_df_from_json("fixtures/tips.json", spark)
-    business_df  = create_df_from_json("fixtures/business.json", spark)
     m_reviews_df = create_df_from_json("fixtures/mobile_reviews.json", spark)
     date = datetime(2022, 4, 14)
 
