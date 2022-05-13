@@ -10,7 +10,6 @@ from test.saff_squeeze_start_point import create_df_from_json, data_frame_to_jso
 def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     browser_reviews = """
   {
-    "user_id": "mh_-eMZ6K5RLWhZyISBhwA",
     "business_id": "mpf3x-BjTdTEA3yCZrAYPw",
     "date": "2021-09-23 23:10:31"
   }
@@ -19,7 +18,6 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
 
     mobile_reviews = """
   {
-    "user_id": "_7bHUi9Uuf5__HHc_Q8guQ",
     "business_id": "mpf3x-BjTdTEA3yCZrAYPw",
     "date": "2022-04-14 00:01:03"
   }    
