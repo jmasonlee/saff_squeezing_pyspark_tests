@@ -8,7 +8,21 @@ from test.saff_squeeze_start_point import create_df_from_json, data_frame_to_jso
 
 ############################# SAFF SQUEEZE #################################
 def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
-    b_reviews_df = create_df_from_json("fixtures/browser_reviews2.json", spark)
+    browser_reviews = """
+  {
+    "review_id": "04UD14gamNjLY0IDYVhHJg",
+    "user_id": "mh_-eMZ6K5RLWhZyISBhwA",
+    "business_id": "mpf3x-BjTdTEA3yCZrAYPw",
+    "stars": 1.0,
+    "useful": 1,
+    "funny": 2,
+    "cool": 1,
+    "text": "I am a long term frequent customer of this establishment. I just went in to order take out (3 apps) and was told theyre too busy to do it. Really? The place is maybe half full at best. Does your dick reach your ass? Yes? Go fuck yourself! Im a frequent customer AND great tipper. Glad that Kanella just opened. NEVER going back to dmitris!",
+    "date": "2021-09-23 23:10:31"
+  }
+    """
+    # b_reviews_df = create_df_from_json("fixtures/browser_reviews2.json", spark)
+    b_reviews_df = spark.read.json(spark.sparkContext.parallelize([browser_reviews]))
     m_reviews_df = create_df_from_json("fixtures/mobile_reviews2.json", spark)
     date = datetime(2022, 4, 14)
 
