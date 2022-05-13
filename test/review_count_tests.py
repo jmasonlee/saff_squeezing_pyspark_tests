@@ -12,7 +12,7 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     browser_reviews = [{
         "user_id": "",
         "business_id": "",
-        "date": "2021-09-23 23:10:31"
+        "date": ""
     }]  # b_reviews_df = spark.read.json(spark.sparkContext.parallelize([browser_reviews]))
     b_reviews_df = spark.createDataFrame(pd.DataFrame(browser_reviews))
 
