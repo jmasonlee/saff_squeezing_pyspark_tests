@@ -23,12 +23,8 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     }]
     m_reviews_df = spark.createDataFrame(pd.DataFrame(mobile_reviews))
 
-    checkins = [{
-        "business_id": "mpf3x-BjTdTEA3yCZrAYPw",
-        "user_id": "mh_-eMZ6K5RLWhZyISBhwA",
-        "date": "2010-09-13 21:43:09"
-    }]
-    checkin_df = spark.createDataFrame(pd.DataFrame(checkins))
+
+    checkin_df = spark.createDataFrame(pd.DataFrame(empty))
     date = datetime(2022, 4, 14)
 
     reviews_df = count_reviews(checkin_df, m_reviews_df, b_reviews_df, date)  # <- This is what we care about
