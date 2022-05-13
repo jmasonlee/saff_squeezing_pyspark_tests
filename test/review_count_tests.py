@@ -17,9 +17,10 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     checkin_df = spark.createDataFrame(pd.DataFrame(empty))
     b_reviews_df = spark.createDataFrame(pd.DataFrame(empty))
 
+    business_id = "my_business_id"
     mobile_reviews = [{
         "user_id": "my_user_id_2",
-        "business_id": "mpf3x-BjTdTEA3yCZrAYPw",
+        "business_id": business_id,
         "date": "2022-04-14 00:01:03"
     }]
     m_reviews_df = spark.createDataFrame(pd.DataFrame(mobile_reviews))
@@ -29,7 +30,7 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
 
     reviews_df = count_reviews(checkin_df, m_reviews_df, b_reviews_df, date)  # <- This is what we care about
 
-    inglewood_pizza = data_frame_to_json(reviews_df.where(reviews_df.business_id == "mpf3x-BjTdTEA3yCZrAYPw"))[0]
-    assert inglewood_pizza["business_id"] == "mpf3x-BjTdTEA3yCZrAYPw"
+    inglewood_pizza = data_frame_to_json(reviews_df.where(reviews_df.business_id == business_id))[0]
+    assert inglewood_pizza["business_id"] == business_id
     assert inglewood_pizza["num_reviews"] == 1
 ############################# SAFF SQUEEZE #################################
