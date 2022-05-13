@@ -25,9 +25,17 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
   }    
     """
     m_reviews_df = spark.read.json(spark.sparkContext.parallelize([mobile_reviews]))
+
+    checkins = """
+  {
+    "business_id": "mpf3x-BjTdTEA3yCZrAYPw",
+    "user_id": "mh_-eMZ6K5RLWhZyISBhwA",
+    "date": "2010-09-13 21:43:09"
+  }    
+    """
+    checkin_df = spark.read.json(spark.sparkContext.parallelize([checkins]))
     date = datetime(2022, 4, 14)
 
-    checkin_df = create_df_from_json("fixtures/checkins_exploded.json", spark)
     reviews_df = count_reviews(checkin_df, m_reviews_df, b_reviews_df, date)  # <- This is what we care about
 
 
