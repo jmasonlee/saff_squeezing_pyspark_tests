@@ -1,9 +1,7 @@
-from datetime import datetime, date
+from datetime import datetime
 from typing import List
 
 from pyspark.sql import functions as F, DataFrame
-from pyspark.sql.functions import udf
-from pyspark.sql.types import IntegerType
 
 
 def transform(business_df: DataFrame,
@@ -12,10 +10,10 @@ def transform(business_df: DataFrame,
               tips_df: DataFrame,
               mobile_reviews_df: DataFrame,
               run_date: datetime = datetime.today()):
+    checkin_df = create_checkin_df_with_one_date_per_row(checkin_df)
+
     reviews_df = count_reviews(checkin_df, mobile_reviews_df, reviews_df, run_date)
-
     checkin_df = count_checkins(checkin_df, run_date)
-
     tips_df = count_tips(tips_df, run_date)
 
     return construct_post_pandemic_recovery_df(
@@ -46,10 +44,9 @@ def count_tips(tips_df, run_date):
 
 
 def count_checkins(checkin_df, run_date):
-    count_recent_dates_udf = udf(lambda dates: count_dates_since_date(dates, run_date), IntegerType())
-    checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
-    checkin_df = checkin_df.withColumn("num_checkins", count_recent_dates_udf(F.col("checkins_list")))
-    checkin_df = checkin_df.drop("date", "checkins_list")
+    checkin_df = checkin_df.filter(checkin_df.date == run_date.date())
+    checkin_df = checkin_df.groupby("business_id").count()
+    checkin_df = checkin_df.withColumnRenamed("count", "num_checkins")
     return checkin_df
 
 
@@ -72,3 +69,15 @@ def is_after_date(date_to_check: str, limiting_date: datetime) -> bool:
     date_to_check = date_to_check.lstrip()
     date_to_check = datetime.strptime(date_to_check, '%Y-%m-%d %H:%M:%S')
     return date_to_check.date() == limiting_date.date()
+
+
+def create_checkin_df_with_one_date_per_row(checkin_df):
+    checkin_df = checkin_df.withColumn("checkins_list", F.split(checkin_df.date, ","))
+    checkin_df = checkin_df.withColumn("date", F.explode(checkin_df.checkins_list))
+    checkin_df = checkin_df.withColumn("date", F.trim(checkin_df.date))
+    checkin_df = checkin_df.select(
+        F.col("business_id"),
+        F.col("user_id"),
+        F.col("date")
+    )
+    return checkin_df
