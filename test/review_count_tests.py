@@ -13,7 +13,8 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
         "user_id": "",
         "business_id": "",
         "date": ""
-    }]  # b_reviews_df = spark.read.json(spark.sparkContext.parallelize([browser_reviews]))
+    }]
+    checkin_df = spark.createDataFrame(pd.DataFrame(empty))
     b_reviews_df = spark.createDataFrame(pd.DataFrame(empty))
 
     mobile_reviews = [{
@@ -24,7 +25,6 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     m_reviews_df = spark.createDataFrame(pd.DataFrame(mobile_reviews))
 
 
-    checkin_df = spark.createDataFrame(pd.DataFrame(empty))
     date = datetime(2022, 4, 14)
 
     reviews_df = count_reviews(checkin_df, m_reviews_df, b_reviews_df, date)  # <- This is what we care about
