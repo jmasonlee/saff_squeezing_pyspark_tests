@@ -15,7 +15,7 @@ def transform(business_df: DataFrame,
 
     checkin_df = create_checkin_df_with_one_date_per_row(checkin_df)
 
-    reviews_df = count_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date)
+    reviews_df = count_interactions_from_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date)
     checkin_df = count_checkins(checkin_df, run_date)
     tips_df = count_tips(tips_df, run_date)
 
@@ -53,7 +53,7 @@ def count_checkins(checkin_df, run_date):
     return checkin_df
 
 
-def count_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date):
+def count_interactions_from_reviews(checkin_df, mobile_reviews_df, browser_reviews_df, run_date):
     mobile_reviews_df = mobile_reviews_df.join(checkin_df, on=['business_id','date', 'user_id'], how="left_anti").select(*mobile_reviews_df.columns)
     reviews_df = mobile_reviews_df.union(browser_reviews_df)
     reviews_df = reviews_df.filter(reviews_df.date == run_date.date())
