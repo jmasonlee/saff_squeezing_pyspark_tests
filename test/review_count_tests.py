@@ -21,6 +21,8 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     "date": "2021-09-23 23:10:31"
   }
     """
+    b_reviews_df = spark.read.json(spark.sparkContext.parallelize([browser_reviews]))
+
     mobile_reviews = """
   {
     "review_id": "kxX2SOes4o-D3ZQBkiMRfA",
@@ -34,10 +36,7 @@ def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     "date": "2022-04-14 00:01:03"
   }    
     """
-    # b_reviews_df = create_df_from_json("fixtures/browser_reviews2.json", spark)
-    b_reviews_df = spark.read.json(spark.sparkContext.parallelize([browser_reviews]))
     m_reviews_df = spark.read.json(spark.sparkContext.parallelize([mobile_reviews]))
-    # m_reviews_df = create_df_from_json("fixtures/mobile_reviews2.json", spark)
     date = datetime(2022, 4, 14)
 
     checkin_df = create_df_from_json("fixtures/checkins_exploded.json", spark)
