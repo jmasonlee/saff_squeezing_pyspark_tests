@@ -10,8 +10,8 @@ import pandas as pd
 ############################# SAFF SQUEEZE #################################
 def test_keeps_mobile_reviews_without_checkins(spark: SparkSession) -> None:
     browser_reviews = [{
-        "user_id": "my_user_id",
-        "business_id": "mpf3x-BjTdTEA3yCZrAYPw",
+        "user_id": "",
+        "business_id": "",
         "date": "2021-09-23 23:10:31"
     }]  # b_reviews_df = spark.read.json(spark.sparkContext.parallelize([browser_reviews]))
     b_reviews_df = spark.createDataFrame(pd.DataFrame(browser_reviews))
