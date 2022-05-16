@@ -26,7 +26,7 @@ def test_will_do_the_right_thing(spark: SparkSession) -> None:
     assert data_frame_to_json(actual_df) == expected_json
     #overwrite_expected(actual_df)
 
-def test_will_do_the_right_thing(spark: SparkSession) -> None:
+def test_only_counts_mobile_reviews_done_separately_from_checkins(spark: SparkSession) -> None:
     b_reviews_df   = create_df_from_json("fixtures/browser_reviews.json", spark)
     checkin_df   = create_df_from_json("fixtures/checkin.json", spark)
     tips_df      = create_df_from_json("fixtures/tips.json", spark)
