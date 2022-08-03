@@ -6,7 +6,7 @@ from pyspark.sql import SparkSession
 
 @pytest.fixture(scope="session")
 def spark(request: FixtureRequest):
-    conf = (SparkConf()
+    conf = (SparkConf().set("spark.default.parallelism", "1")
         .setMaster("local")
         .setAppName("sample_pyspark_testing_starter"))
 

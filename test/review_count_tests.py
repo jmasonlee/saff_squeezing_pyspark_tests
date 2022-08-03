@@ -1,45 +1,40 @@
 from datetime import datetime
 
-import pytest
+
 from chispa import assert_df_equality
-from pyspark.pandas import DataFrame
-from pyspark.sql import SparkSession, functions as F
+from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType
 
-from pandemic_recovery_batch import create_checkin_df_with_one_date_per_row, count_interactions_from_reviews, count_checkins, count_tips
-from test.saff_squeeze_start_point import create_df_from_json, data_frame_to_json, save_results_to_expected
+SCHEMA = StructType([StructField("review_id", StringType()), StructField("user_id", StringType()),
+                StructField("business_id", StringType()), StructField("stars", FloatType()),
+                StructField("useful", IntegerType()), StructField("funny", IntegerType()),
+                StructField("cool", IntegerType()), StructField("text", StringType()),
+                StructField("date", StringType()), ])
+
 import pandas as pd
 
 
 
 #There's a review without a checkin at the same time
 # This thing is counted as a review
-DEFAULT_STRING = "default"
-DEFAULT_NUM = -1
+from pandemic_recovery_batch import count_interactions_from_reviews
 
-class ReviewDataFrame(DataFrame):
+DEFAULT_STRING = "default"
+DEFAULT_INT = -1
+DEFAULT_FLOAT = -1.0
+
+class ReviewDataFrame:
     def __init__(self, spark):
-        super(ReviewDataFrame, self).__init__(self)
         self.spark = spark
-        self.schema = StructType([
-            StructField("review_id", StringType()),
-            StructField("user_id", StringType()),
-            StructField("business_id", StringType()),
-            StructField("stars", FloatType()),
-            StructField("useful", IntegerType()),
-            StructField("funny", IntegerType()),
-            StructField("cool", IntegerType()),
-            StructField("text", StringType()),
-            StructField("date", StringType()),
-        ])
+        self.schema = SCHEMA
 
     def of(self, review_id=DEFAULT_STRING,
            user_id=DEFAULT_STRING,
            business_id=DEFAULT_STRING,
-           stars=DEFAULT_NUM,
-           useful=DEFAULT_NUM,
-           funny=DEFAULT_NUM,
-           cool=DEFAULT_NUM,
+           stars=DEFAULT_FLOAT,
+           useful=DEFAULT_INT,
+           funny=DEFAULT_INT,
+           cool=DEFAULT_INT,
            text=DEFAULT_STRING,
            date=DEFAULT_STRING):
         data = [(
@@ -53,10 +48,14 @@ class ReviewDataFrame(DataFrame):
             text,
             date,
         )]
-        return self.spark.createDataFrame(self.schema, data)
+        return self.spark.createDataFrame(data=data, schema=self.schema)
+
+    def with_row(self, row: dict):
+        return self.of(**row) ###REVISIT HERE
+        #TODO:Genericize
 
 
-def count_reviews(df: DataFrame, business_id: str, spark: SparkSession) -> int:
+def count_reviews(df: DataFrame, business_id: str, spark: SparkSession, date=None) -> int:
     """
     1) Pass the dataframe into the function we're testing
     2) We're going to return the number of reviews for the business
@@ -66,15 +65,29 @@ def count_reviews(df: DataFrame, business_id: str, spark: SparkSession) -> int:
     count_interactions_from_reviews(__(empty()), df, __(empty()), date)  # <- This is what we care about
 
 
-def test_foo(spark):
+def test_multiple_row_df_creation(spark):
     review_dataframe = ReviewDataFrame(spark)
-    # A PERSON Makes a new review at A TIME at THE BUSINESS
-    df = review_dataframe.of(user_id="Scooby-Doo", date="2000-01-02 03:04:05", business_id="Crusty Crab")
-    # This(=df?) should count as one review at THE BUSINESS
-    assert count_reviews(business) == 1
+    business = "Crusty Crab"
+    date = "2000-01-02 03:04:05"
+    user = "Scooby-Doo"
+    row = {"user_id" : user, "date": date, "business_id": business}
+    df_actual = review_dataframe.with_row(row)
+    df_expected = spark.createDataFrame(schema=SCHEMA, data=[(user, date, business)])
+    assert_df_equality(df_expected, df_actual)
 
-    # JACQUELINE Makes a new review at NOON_FRIDAY at INGLEWOOD PIZZA
-    # This should count as one review at INGLEWOOD PIZZA
+
+def test_foo(spark):
+    assert True
+    # review_dataframe = ReviewDataFrame(spark)
+    # # A PERSON Makes a new review at A TIME at THE BUSINESS
+    # business = "Crusty Crab"
+    # date = "2000-01-02 03:04:05"
+    # df = review_dataframe.of(user_id="Scooby-Doo", date=date, business_id=business)
+    # # This(=df?) should count as one review at THE BUSINESS
+    # assert count_reviews(df=df, business_id=business, spark=spark, date=date) == 1
+    #
+    # # JACQUELINE Makes a new review at NOON_FRIDAY at INGLEWOOD PIZZA
+    # # This should count as one review at INGLEWOOD PIZZA
 
 
 
