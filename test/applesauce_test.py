@@ -34,7 +34,7 @@ def test_keeps_mobile_reviews_without_checkins(spark):
 
     expected_df = create_df(spark, SCHEMA2, [{ 'business_id': 'bid', 'num_reviews': 1}])
     assert_df_equality(reviews_df, expected_df)
-    # verify_df(reviews_df)
+    # verify_df(reviews_df
 
 def test_does_not_count_mobile_reviews_with_checkins(spark):
     mobile_df = create_df(spark, SCHEMA, [{ 'business_id': 'bid', 'user_id': 'uid', 'date': '2022-04-14'}])
@@ -43,4 +43,5 @@ def test_does_not_count_mobile_reviews_with_checkins(spark):
 
     reviews_df = count_interactions_from_reviews(checkin_df, mobile_df, __, datetime(2022, 4, 14))
 
-    verify_df(reviews_df)
+    expected_df = create_df(spark, SCHEMA2, [])
+    assert_df_equality(reviews_df, expected_df)
