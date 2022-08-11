@@ -7,7 +7,7 @@ from pyspark.sql.types import StructType, StructField, StringType, IntegerType, 
 
 SCHEMA = StructType([StructField("review_id", StringType()), StructField("user_id", StringType()),
                 StructField("business_id", StringType()), StructField("stars", FloatType()),
-                StructField("useful", IntegerType()), StructField("funny", IntegerType()),
+                , StructField("funny", IntegerType()),
                 StructField("cool", IntegerType()), StructField("text", StringType()),
                 StructField("date", StringType()), ])
 
