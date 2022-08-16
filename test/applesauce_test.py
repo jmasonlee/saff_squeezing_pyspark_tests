@@ -1,9 +1,8 @@
 from datetime import datetime
 
 
-from chispa import assert_df_equality, assert_column_equality
+from chispa import assert_df_equality
 from pyspark.sql.types import StructType, StructField, StringType, LongType, IntegerType
-import pyspark.sql.functions as F
 
 from pandemic_recovery_batch import count_interactions_from_reviews
 
@@ -40,6 +39,31 @@ def test_keeps_mobile_reviews_without_checkins(spark):
     #We want the resulting dataframe to have exactly one row
     #We want the row with business id bid to have num_reviews as 1
 
+
+
+# create a dataframe that only specifies the information important to my test
+# 1. just specify data
+# 2. just specify schema
+# 3. create an empty dataframe without data/schema that will "just work"
+
+# function(dataframe ... other args) -> dataframe (this is a "transformation")
+# these dataframes go into a function
+# they come out as
+
+EMPTY = spark.createDataFrame()
+
+
+def df_has_rows(df, rows):
+    return all(any(row.items() <= df_row.asDict().items() for df_row in df.collect()) for row in rows)
+
+def test_keeps_mobile_reviews_without_checkins(spark):
+    mobile_review_df = spark.createDataFrame(data=[{'business_id': 'bid', 'user_id': 'uid', 'date': '2022-04-14'}])
+    __ = spark.createDataFrame(schema=mobile_review_df.schema, data=[])
+
+    reviews_df = count_interactions_from_reviews(__, mobile_review_df, __, datetime(2022, 4, 14))
+
+    assert reviews_df.count() == 1
+    assert df_has_rows(reviews_df, [{'business_id': 'bid', 'num_reviews': 1}])
 
 def test_count_reviews_schema(spark):
     important_input_columns = StructType([
