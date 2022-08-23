@@ -11,7 +11,8 @@ from pandemic_recovery_batch import count_interactions_from_reviews
 class TestDataFrame:
     def __init__(self, spark):
         self.spark = spark
-        self.schema = []
+        self.data = [{}]
+        self.schema = None
 
     def __enter__(self):
         return self.create_df()
@@ -24,7 +25,11 @@ class TestDataFrame:
         return self
 
     def create_df(self):
-        return self.spark.createDataFrame(schema=self.schema, data=[{}])
+        return self.spark.createDataFrame(schema=self.schema, data=self.data)
+
+    def with_data(self, rows: list[dict]):
+        self.data = rows
+        return self
 
 
 class EmptyDataFrame:

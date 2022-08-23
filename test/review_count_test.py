@@ -5,6 +5,8 @@ from chispa import assert_df_equality
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType
 
+from test.test_dataframe import TestDataFrame
+
 SCHEMA = StructType([StructField("review_id", StringType()), StructField("user_id", StringType()),
                 StructField("business_id", StringType()), StructField("stars", FloatType()), StructField("funny", IntegerType()),
                 StructField("cool", IntegerType()), StructField("text", StringType()),
@@ -12,46 +14,11 @@ SCHEMA = StructType([StructField("review_id", StringType()), StructField("user_i
 
 import pandas as pd
 
-
-
-#There's a review without a checkin at the same time
-# This thing is counted as a review
-from pandemic_recovery_batch import count_interactions_from_reviews
+from pandemic_recovery_batch import count_interactions_from_reviews, create_checkin_df_with_one_date_per_row
 
 DEFAULT_STRING = "default"
 DEFAULT_INT = -1
 DEFAULT_FLOAT = -1.0
-
-class ReviewDataFrame:
-    def __init__(self, spark):
-        self.spark = spark
-        self.schema = SCHEMA
-
-    def of(self, review_id=DEFAULT_STRING,
-           user_id=DEFAULT_STRING,
-           business_id=DEFAULT_STRING,
-           stars=DEFAULT_FLOAT,
-           useful=DEFAULT_INT,
-           funny=DEFAULT_INT,
-           cool=DEFAULT_INT,
-           text=DEFAULT_STRING,
-           date=DEFAULT_STRING):
-        data = [(
-            review_id,
-            user_id,
-            business_id,
-            stars,
-            useful,
-            funny,
-            cool,
-            text,
-            date,
-        )]
-        return self.spark.createDataFrame(data=data, schema=self.schema)
-
-    def with_row(self, row: dict):
-        return self.of(**row) ###REVISIT HERE
-        #TODO:Genericize
 
 
 def count_reviews(df: DataFrame, business_id: str, spark: SparkSession, date=None) -> int:
@@ -65,14 +32,26 @@ def count_reviews(df: DataFrame, business_id: str, spark: SparkSession, date=Non
 
 
 def test_multiple_row_df_creation(spark):
-    review_dataframe = ReviewDataFrame(spark)
-    business = "Crusty Crab"
-    date = "2000-01-02 03:04:05"
-    user = "Scooby-Doo"
-    row = {"user_id" : user, "date": date, "business_id": business}
-    df_actual = review_dataframe.with_row(row)
-    df_expected = spark.createDataFrame(schema=SCHEMA, data=[(user, date, business)])
-    assert_df_equality(df_expected, df_actual)
+    business_id = "Crusty Crab"
+    date = "2000-01-02 03:04:05, 2000-01-01 04:05:06"
+    user_id = "Scooby-Doo"
+
+    # reference_df = spark.createDataFrame({"business_id": business_id, "date": date, "user": user_id})
+    input_df = TestDataFrame(spark).with_data([{"business_id": business_id, "date": date, "user_id": user_id}]).create_df()
+    input_df.show()
+    review_dataframe = TestDataFrame(spark).with_schema_from(input_df).create_df()
+
+    df_actual = create_checkin_df_with_one_date_per_row(input_df)
+
+    # row = {"user_id" : user_id, "date": date, "business_id": business_id}
+    # df_actual = review_dataframe.with_row(row)
+    df_expected = spark.createDataFrame(
+        [
+            {"user_id" : user_id, "date": "2000-01-02 03:04:05", "business_id": business_id},
+            {"user_id" : user_id, "date": "2000-01-01 04:05:06", "business_id": business_id}
+        ]
+    )
+    assert_df_equality(df_expected, df_actual, ignore_nullable=True, ignore_column_order=True)
 
 
 def test_foo(spark):
