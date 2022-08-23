@@ -6,10 +6,9 @@ from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType
 
 SCHEMA = StructType([StructField("review_id", StringType()), StructField("user_id", StringType()),
-                StructField("business_id", StringType()), StructField("stars", FloatType()),
-                , StructField("funny", IntegerType()),
+                StructField("business_id", StringType()), StructField("stars", FloatType()), StructField("funny", IntegerType()),
                 StructField("cool", IntegerType()), StructField("text", StringType()),
-                StructField("date", StringType()), ])
+                StructField("date", StringType())])
 
 import pandas as pd
 
