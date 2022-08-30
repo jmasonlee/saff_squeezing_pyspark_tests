@@ -13,12 +13,17 @@ class TestDataFrame:
         self.spark = spark
         self.data = [{}]
         self.schema = None
+        self.base_data = {}
 
     def __enter__(self):
         return self.create_df()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
+
+    def with_base_data(self, **kwargs):
+        self.base_data = kwargs
+        return self
 
     def with_schema_from(self, reference_df):
         self.schema = reference_df.schema
@@ -31,6 +36,8 @@ class TestDataFrame:
         self.data = rows
         return self
 
+    def create_test_dataframe(self, **kwargs):
+        return TestDataFrame(self.spark).with_data([self.base_data | kwargs])
 
 class EmptyDataFrame:
     def __init__(self, spark):
