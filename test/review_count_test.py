@@ -38,8 +38,6 @@ def test_multiple_row_df_creation(spark):
 
     # reference_df = spark.createDataFrame({"business_id": business_id, "date": date, "user": user_id})
     input_df = TestDataFrame(spark).with_data([{"business_id": business_id, "date": date, "user_id": user_id}]).create_df()
-    input_df.show()
-    review_dataframe = TestDataFrame(spark).with_schema_from(input_df).create_df()
 
     df_actual = create_checkin_df_with_one_date_per_row(input_df)
 
