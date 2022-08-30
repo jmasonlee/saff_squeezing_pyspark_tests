@@ -32,12 +32,12 @@ def count_reviews(df: DataFrame, business_id: str, spark: SparkSession, date=Non
 
 
 def test_multiple_row_df_creation(spark):
-    business_id = "Crusty Crab"
     date = "2000-01-02 03:04:05, 2000-01-01 04:05:06"
     user_id = "Scooby-Doo"
 
     # reference_df = spark.createDataFrame({"business_id": business_id, "date": date, "user": user_id})
-    input_df = TestDataFrame(spark).with_data([{"business_id": business_id, "date": date, "user_id": user_id}]).create_df()
+    input_df = TestDataFrame(spark).with_data(
+        [{"business_id": "Crusty Crab", "date": date, "user_id": user_id}]).create_df()
 
     df_actual = create_checkin_df_with_one_date_per_row(input_df)
 
@@ -45,8 +45,8 @@ def test_multiple_row_df_creation(spark):
     # df_actual = review_dataframe.with_row(row)
     df_expected = spark.createDataFrame(
         [
-            {"user_id" : user_id, "date": "2000-01-02 03:04:05", "business_id": business_id},
-            {"user_id" : user_id, "date": "2000-01-01 04:05:06", "business_id": business_id}
+            {"user_id": user_id, "date": "2000-01-02 03:04:05", "business_id": "Crusty Crab"},
+            {"user_id": user_id, "date": "2000-01-01 04:05:06", "business_id": "Crusty Crab"}
         ]
     )
     assert_df_equality(df_expected, df_actual, ignore_nullable=True, ignore_column_order=True)
