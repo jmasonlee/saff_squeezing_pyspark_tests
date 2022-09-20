@@ -37,7 +37,17 @@ class TestDataFrame:
         return self
 
     def create_test_dataframe(self, **kwargs):
-        return TestDataFrame(self.spark).with_data([self.base_data | kwargs])
+        #we want to get a column name, and a list of ordered values from kwargs
+        column_name = 'date'
+        column_values = kwargs[column_name]
+        #Update each row's column name field with the value from the ordered values
+        # go over each row in base_data
+        new_rows = []
+        for row_from_column in column_values:
+           new_rows.append(self.base_data | {column_name: row_from_column})
+        #   and zip it with column values
+        new_test_dataframe = TestDataFrame(self.spark)
+        return new_test_dataframe.with_data(new_rows)
 
 class EmptyDataFrame:
     def __init__(self, spark):
