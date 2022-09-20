@@ -39,23 +39,28 @@ def test_multiple_row_df_creation(spark):
     # I want to create a test dataframe with data that contains a business_id a valid date and a user_id
     # create a valid dataframe with a list of dates
 
-
-
-    input_df = TestDataFrame(spark) \
-        .with_base_data(user_id="Scooby-Doo", business_id="Crusty Crab") \
-        .create_test_dataframe(date="2000-01-02 03:04:05, 2000-01-01 04:05:06") \
+    base_data = TestDataFrame(spark).with_base_data(user_id="Scooby-Doo", business_id="Crusty Crab")
+    input_df = base_data \
+        .create_test_dataframe(date=["2000-01-02 03:04:05, 2000-01-01 04:05:06"]) \
         .create_df()
 
     df_actual = create_checkin_df_with_one_date_per_row(input_df)
 
     # return value should be a dataframe with the same data, for each element on the list and a single date per row
 
-    df_expected = spark.createDataFrame(
-        [
-            {"user_id": "Scooby-Doo", "date": "2000-01-02 03:04:05", "business_id": "Crusty Crab"},
-            {"user_id": "Scooby-Doo", "date": "2000-01-01 04:05:06", "business_id": "Crusty Crab"}
-        ]
-    )
+    # df_expected = spark.createDataFrame(
+    #     [
+    #         {"user_id": "Scooby-Doo", "date": "2000-01-02 03:04:05", "business_id": "Crusty Crab"},
+    #         {"user_id": "Scooby-Doo", "date": "2000-01-01 04:05:06", "business_id": "Crusty Crab"}
+    #     ]
+    # )
+
+    df_expected = base_data \
+        .create_test_dataframe(date=[
+            "2000-01-02 03:04:05",
+            "2000-01-01 04:05:06"
+        ]) \
+        .create_df()
     assert_df_equality(df_expected, df_actual, ignore_nullable=True, ignore_column_order=True)
 
 
