@@ -37,7 +37,7 @@ class TestDataFrame:
         return self
 
     def create_test_dataframe(self, **kwargs):
-        column_name = 'date'
+        column_name = list(kwargs.keys())[0]
         column_values = kwargs[column_name]
 
         new_rows = []
