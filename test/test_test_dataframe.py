@@ -43,9 +43,12 @@ def test_multiple_columns(spark):
 
 
 def applesauce(**kwargs) -> List[Dict]:
-    dict1 = {'k1': 'v1'} | {'k2': 'v3'}
-    dict2 = {'k1': 'v2', 'k2': 'v4'}
-    return [dict1, dict2]
+    # [dict(zip(('x', 'y'), col)) for col in zip(d['x'], d['y'])]
+    return [dict(zip(('k1', 'k2'), col)) for col in zip(kwargs['k1'], kwargs['k2'])]
+
+    # dict1 = dict({'k1': 'v1'}, **{'k2': 'v3'})
+    # dict2 = {'k1': 'v2', 'k2': 'v4'}
+    # return [dict1, dict2]
 
 
 def test_applesauce():
