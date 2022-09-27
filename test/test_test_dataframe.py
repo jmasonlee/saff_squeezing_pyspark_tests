@@ -1,3 +1,5 @@
+from typing import List, Dict, Any
+
 import pytest
 from chispa import assert_df_equality
 
@@ -39,3 +41,18 @@ def test_multiple_columns(spark):
 
     assert_df_equality(test_df, df_actual, ignore_nullable=True, ignore_column_order=True, ignore_row_order=True)
 
+
+def applesauce(**kwargs) -> List[Dict]:
+    dict1 = {'k1': 'v1', 'k2': 'v3'}
+    dict2 = {'k1': 'v2', 'k2': 'v4'}
+    return [dict1, dict2]
+
+
+def test_applesauce():
+    actual_applesauce = applesauce(k1=['v1', 'v2'], k2=['v3', 'v4'])
+    expected_applesauce = [{'k1': 'v1', 'k2':'v3'}, {'k1': 'v2', 'k2': 'v4'}]
+    assert actual_applesauce == expected_applesauce
+
+    # additional_columns = {k1: [v1, v2], k2: [v3, v4]}
+    # 1st iteration select: v1, v3
+    # 2nd iteration select: v2, v4
