@@ -54,8 +54,8 @@ class TestDataFrame:
 
     def create_test_dataframe_from_table(self, table) -> DataFrame:
         return self.spark.createDataFrame([
-        {"user_id": "Scooby-Doo", "business_id": "Crusty Crab"} | {"date": "2000-01-02 03:04:05", "stars": 5},
-        {"user_id": "Scooby-Doo", "business_id": "Crusty Crab"} | {"date": "2000-01-01 04:05:06", "stars": 3}
+        self.base_data | {"date": "2000-01-02 03:04:05", "stars": 5},
+        self.base_data | {"date": "2000-01-01 04:05:06", "stars": 3}
     ])
 
 
