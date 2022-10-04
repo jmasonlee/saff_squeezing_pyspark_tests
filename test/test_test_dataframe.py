@@ -6,6 +6,8 @@ from chispa import assert_df_equality
 from test.test_dataframe import TestDataFrame
 
 # Bug: createDataFrame returns a new dataframe without the base_data or schema of the parent dataframe
+# We have no tests for exception handling
+# createDataFrame shouldn't return TestDataFrame, it should return a dataframe
 
 def test_create_test_dataframe(spark):
     base_data = TestDataFrame(spark).with_base_data(user_id="Scooby-Doo", business_id="Crusty Crab")
