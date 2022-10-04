@@ -4,6 +4,8 @@ import functools
 from datetime import datetime
 
 import pytest
+from pyspark.sql import DataFrame
+from pyspark.sql.types import DataType
 
 from pandemic_recovery_batch import count_interactions_from_reviews
 
@@ -21,18 +23,21 @@ class TestDataFrame:
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
 
-    def with_base_data(self, **kwargs):
+    def with_base_data(self, **kwargs) -> "TestDataFrame":
         self.base_data = kwargs
         return self
 
-    def with_schema_from(self, reference_df):
+    def set_type_for_column(self, column: str, type: DataType.__class__) -> "TestDataFrame":
+        return self
+
+    def with_schema_from(self, reference_df) -> "TestDataFrame":
         self.schema = reference_df.schema
         return self
 
     def create_df(self):
         return self.spark.createDataFrame(schema=self.schema, data=self.data)
 
-    def with_data(self, rows: list[dict]):
+    def with_data(self, rows: list[dict]) -> "TestDataFrame":
         self.data = rows
         return self
 
@@ -46,6 +51,13 @@ class TestDataFrame:
 
         new_test_dataframe = TestDataFrame(self.spark)
         return new_test_dataframe.with_data(new_rows)
+
+    def create_test_dataframe_from_table(self, param) -> DataFrame:
+        return self.spark.createDataFrame([
+        {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-02 03:04:05", "stars": 5},
+        {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-01 04:05:06", "stars": 3}
+    ])
+
 
 class EmptyDataFrame:
     def __init__(self, spark):
