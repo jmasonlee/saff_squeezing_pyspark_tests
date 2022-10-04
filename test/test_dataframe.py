@@ -57,9 +57,10 @@ class TestDataFrame:
         stars = "stars"
         date_data = ["2000-01-02 03:04:05", "2000-01-01 04:05:06"]
         stars_data = [5, 3]
+        columns_data = ["date", "stars"]
         return self.spark.createDataFrame([
-        self.base_data | {date: date_data[0], stars: stars_data[0]},
-        self.base_data | {date: date_data[1], stars: stars_data[1]}
+        self.base_data | {columns_data[0]: date_data[0], columns_data[1]: stars_data[0]},
+        self.base_data | {columns_data[0]: date_data[1], columns_data[1]: stars_data[1]}
     ])
 
 
