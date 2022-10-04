@@ -52,10 +52,10 @@ class TestDataFrame:
         new_test_dataframe = TestDataFrame(self.spark)
         return new_test_dataframe.with_data(new_rows)
 
-    def create_test_dataframe_from_table(self, param) -> DataFrame:
+    def create_test_dataframe_from_table(self, table) -> DataFrame:
         return self.spark.createDataFrame([
-        {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-02 03:04:05", "stars": 5},
-        {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-01 04:05:06", "stars": 3}
+        {"user_id": "Scooby-Doo", "business_id": "Crusty Crab"} | {"date": "2000-01-02 03:04:05", "stars": 5},
+        {"user_id": "Scooby-Doo", "business_id": "Crusty Crab"} | {"date": "2000-01-01 04:05:06", "stars": 3}
     ])
 
 
