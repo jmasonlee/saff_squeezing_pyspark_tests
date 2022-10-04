@@ -37,19 +37,11 @@ class TestDataFrame:
         return self
 
     def create_test_dataframe(self, **kwargs):
-        column_names = list(kwargs.keys())
-        # Check that all of the column_value arrays are the same length
-        num_rows = len(kwargs.values()[0])
-        if not all([True if len(x) == num_rows else False for x in kwargs.values()]):
-            raise Exception("All data arrays must be equal length!")
-        # Get that length
-        # Make sure that the i-th value is assigned to the i-th row for each column value
+        column_name = list(kwargs.keys())[0]
+        column_values = kwargs[column_name]
 
         new_rows = []
-        for column_name in column_names:
-            column_values = kwargs[column_name]
-
-            for i, column_value in enumerate:
+        for row_from_column in column_values:
             new_rows.append(self.base_data | {column_name: row_from_column})
 
         new_test_dataframe = TestDataFrame(self.spark)
