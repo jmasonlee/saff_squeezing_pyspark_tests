@@ -53,8 +53,6 @@ class TestDataFrame:
         return new_test_dataframe.with_data(new_rows)
 
     def create_test_dataframe_from_table(self, table) -> DataFrame:
-        date = "date"
-        stars = "stars"
         date_data = ["2000-01-02 03:04:05", "2000-01-01 04:05:06"]
         stars_data = [5, 3]
         columns_data = ["date", "stars"]
