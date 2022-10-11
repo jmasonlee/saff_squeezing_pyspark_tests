@@ -63,10 +63,7 @@ class TestDataFrame:
         rows = []
         for i, _ in enumerate(date_data):
             rows.append(self.base_data | {col1: date_data[i], col2: stars_data[i]})
-        return self.spark.createDataFrame(rows)  # [ line 64 for line in columns_data]
-        # self.base_data | {col1: date_data[0], col2: stars_data[0]},
-        # self.base_data | {col1: date_data[1], col2: stars_data[1]}
-    # ])
+        return self.spark.createDataFrame(rows)
 
 
 class EmptyDataFrame:
