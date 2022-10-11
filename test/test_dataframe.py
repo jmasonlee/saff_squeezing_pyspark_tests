@@ -60,9 +60,8 @@ class TestDataFrame:
         columns_data = ["date", "stars"]
         col1 = columns_data[0]
         col2 = columns_data[1]
-        rows = []
-        for i, _ in enumerate(date_data):
-            rows.append(self.base_data | {col1: date_data[i], col2: stars_data[i]})
+        rows = [self.base_data | {col1: date_data[i], col2: stars_data[i]} for i in range(len(date_data))]
+
         return self.spark.createDataFrame(rows)
 
 
