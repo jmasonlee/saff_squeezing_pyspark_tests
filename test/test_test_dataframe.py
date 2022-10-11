@@ -35,6 +35,10 @@ def test_create_test_dataframe(spark):
 
     assert_df_equality(test_df, df_actual, ignore_nullable=True, ignore_column_order=True, ignore_row_order=True)
 
+def test_add_column_to_schema(spark):
+    pass
+
+@pytest.mark.skip()
 def test_multiple_columns(spark):
     base_data = TestDataFrame(spark).with_base_data(user_id="Scooby-Doo", business_id="Crusty Crab")
     base_data.set_type_for_column("date", DateType)
