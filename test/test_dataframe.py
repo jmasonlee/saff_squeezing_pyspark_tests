@@ -58,10 +58,15 @@ class TestDataFrame:
         date_data = ["2000-01-02 03:04:05", "2000-01-01 04:05:06"]
         stars_data = [5, 3]
         columns_data = ["date", "stars"]
-        return self.spark.createDataFrame([
-        self.base_data | {columns_data[0]: date_data[0], columns_data[1]: stars_data[0]},
-        self.base_data | {columns_data[0]: date_data[1], columns_data[1]: stars_data[1]}
-    ])
+        col1 = columns_data[0]
+        col2 = columns_data[1]
+        rows = []
+        for i, _ in enumerate(date_data):
+            rows.append(self.base_data | {col1: date_data[i], col2: stars_data[i]})
+        return self.spark.createDataFrame(rows)  # [ line 64 for line in columns_data]
+        # self.base_data | {col1: date_data[0], col2: stars_data[0]},
+        # self.base_data | {col1: date_data[1], col2: stars_data[1]}
+    # ])
 
 
 class EmptyDataFrame:
