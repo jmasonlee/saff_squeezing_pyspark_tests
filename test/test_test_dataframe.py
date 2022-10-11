@@ -1,10 +1,12 @@
+from collections import namedtuple
 from typing import List, Dict, Any
 
 import pytest
 from chispa import assert_df_equality
-from pyspark.sql.types import DateType, IntegerType
+from pyspark.sql.types import DateType, IntegerType, StructType, StructField, StringType
 
-from test.test_dataframe import TestDataFrame
+from test.test_dataframe import TestDataFrame, Field
+
 
 # Bug: createDataFrame returns a new dataframe without the base_data or schema of the parent dataframe
 # We have no tests for exception handling
@@ -36,7 +38,12 @@ def test_create_test_dataframe(spark):
     assert_df_equality(test_df, df_actual, ignore_nullable=True, ignore_column_order=True, ignore_row_order=True)
 
 def test_add_column_to_schema(spark):
-    pass
+    schema_field = Field("name", StringType())
+
+    schema = StructType([
+        StructField(schema_field.name, schema_field.type),
+        StructField('name', StringType()),
+    ])
 
 @pytest.mark.skip()
 def test_multiple_columns(spark):
