@@ -58,9 +58,10 @@ class TestDataFrame:
         date_data = ["2000-01-02 03:04:05", "2000-01-01 04:05:06"]
         stars_data = [5, 3]
         columns_data = ["date", "stars"]
-        col1 = columns_data[0]
-        col2 = columns_data[1]
-        rows = [self.base_data | {col1: date_data[i], col2: stars_data[i]} for i in range(len(date_data))]
+        rows = [
+            self.base_data | {columns_data[0]: date_data[i], columns_data[1]: stars_data[i]}
+                for i in range(len(date_data))
+        ]
 
         return self.spark.createDataFrame(rows)
 
