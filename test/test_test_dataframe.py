@@ -37,13 +37,16 @@ def test_create_test_dataframe(spark):
 
     assert_df_equality(test_df, df_actual, ignore_nullable=True, ignore_column_order=True, ignore_row_order=True)
 
-def test_add_column_to_schema(spark):
-    schema_field = Field("name", StringType())
 
-    schema = StructType([
-        StructField(schema_field.name, schema_field.type),
-        StructField('name', StringType()),
-    ])
+def test_add_column_to_schema(spark):
+    test_df = TestDataFrame(spark).set_type_for_column("name", StringType())
+    schema_field = Field("name", StringType())
+    schema = [schema_field]
+    assert test_df.schema == schema
+    # schema = StructType([
+    #     StructField(schema_field.name, schema_field.type),
+    #     StructField('name', StringType()),
+    # ])
 
 @pytest.mark.skip()
 def test_multiple_columns(spark):

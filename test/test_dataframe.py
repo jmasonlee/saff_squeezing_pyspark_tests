@@ -15,12 +15,16 @@ class Field:
         self.name = name
         self.type = type
 
+    def __eq__(self, other):
+        return type(other) == Field and self.name == other.name and type(self.type) == type(other.type)
+
 
 class TestDataFrame:
     def __init__(self, spark):
         self.spark = spark
         self.data = [{}]
         self.schema = None
+        self.fields = []
         self.base_data = {}
 
     def __enter__(self):
@@ -34,6 +38,7 @@ class TestDataFrame:
         return self
 
     def set_type_for_column(self, column: str, type: DataType.__class__) -> "TestDataFrame":
+        self.fields.append(Field(column, type))
         return self
 
     def with_schema_from(self, reference_df) -> "TestDataFrame":
