@@ -53,11 +53,19 @@ class TestDataFrame:
         return new_test_dataframe.with_data(new_rows)
 
     def create_test_dataframe_from_table(self, table) -> DataFrame:
+        #col_headers = ["date", "stars"]
         date_data = ["2000-01-02 03:04:05", "2000-01-01 04:05:06"]
         stars_data = [5, 3]
-        columns_data = ["date", "stars"]
+
+        col_headers = ["date", "stars"]
         rows = [
-            self.base_data | {columns_data[0]: date_data[i], columns_data[1]: stars_data[i]}
+            ("2000-01-02 03:04:05", 5),
+            ("2000-01-01 04:05:06", 3)
+        ]
+
+
+        rows = [
+            self.base_data | {col_headers[0]: date_data[i], col_headers[1]: stars_data[i]}
                 for i in range(len(date_data))
         ]
 
