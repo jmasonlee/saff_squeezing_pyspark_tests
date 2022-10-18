@@ -2,10 +2,11 @@ import functools
 
 # Balazs idea
 from datetime import datetime
+from typing import Optional
 
 import pytest
 from pyspark.sql import DataFrame
-from pyspark.sql.types import DataType
+from pyspark.sql.types import DataType, StructType, StructField
 
 from pandemic_recovery_batch import count_interactions_from_reviews
 
@@ -23,7 +24,7 @@ class TestDataFrame:
     def __init__(self, spark):
         self.spark = spark
         self.data = [{}]
-        self.schema = None
+        self.schema: Optional[StructType] = None
         self.fields = []
         self.base_data = {}
 
@@ -38,7 +39,11 @@ class TestDataFrame:
         return self
 
     def set_type_for_column(self, column: str, type: DataType.__class__) -> "TestDataFrame":
-        self.fields.append(Field(column, type))
+        if not self.schema:
+            self.schema = StructType([])
+        new_schema = self.schema.fields.copy()
+        new_schema.append(StructField(column, type))
+        self.schema = StructType(new_schema)
         return self
 
     def with_schema_from(self, reference_df) -> "TestDataFrame":

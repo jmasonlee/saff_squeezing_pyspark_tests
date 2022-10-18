@@ -40,13 +40,9 @@ def test_create_test_dataframe(spark):
 
 def test_add_column_to_schema(spark):
     test_df = TestDataFrame(spark).set_type_for_column("name", StringType())
-    schema_field = Field("name", StringType())
-    schema = [schema_field]
-    assert test_df.schema == schema
-    # schema = StructType([
-    #     StructField(schema_field.name, schema_field.type),
-    #     StructField('name', StringType()),
-    # ])
+    # make sure this includes a name column of type String
+    assert test_df.schema.fields[0].name == "name"
+    assert test_df.schema.fields[0].dataType == StringType()
 
 @pytest.mark.skip()
 def test_multiple_columns(spark):
