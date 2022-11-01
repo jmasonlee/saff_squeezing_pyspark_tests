@@ -57,7 +57,7 @@ class TestDataFrame:
         self.data = rows
         return self
 
-    def create_test_dataframe(self, **kwargs):
+    def create_test_dataframe(self, **kwargs) -> "TestDataFrame":
         column_name = list(kwargs.keys())[0]
         column_values = kwargs[column_name]
 
