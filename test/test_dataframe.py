@@ -24,7 +24,7 @@ class TestDataFrame:
     def __init__(self, spark):
         self.spark = spark
         self.data = [{}]
-        self.explicit_schema: Optional[StructType] = None
+        self.explicit_schema: Optional[StructType] = StructType([])
         self.fields = []
         self.base_data = {}
 
@@ -39,8 +39,8 @@ class TestDataFrame:
         return self
 
     def set_type_for_column(self, column: str, type: DataType.__class__) -> "TestDataFrame":
-        if not self.explicit_schema:
-            self.explicit_schema = StructType([])
+        # if not self.explicit_schema:
+        #     self.explicit_schema = StructType([])
         self.explicit_schema.add(column, type)
         return self
 
@@ -48,7 +48,9 @@ class TestDataFrame:
         self.explicit_schema = reference_df.schema
         return self
 
-    def create_df(self):
+    def create_df(self) -> DataFrame:
+        if len(self.explicit_schema.fields) == 0:
+            return self.spark.createDataFrame(data=self.data)
         return self.spark.createDataFrame(schema=self.explicit_schema, data=self.data)
 
     def with_data(self, rows: list[dict]) -> "TestDataFrame":
