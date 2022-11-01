@@ -24,7 +24,7 @@ class TestDataFrame:
     def __init__(self, spark):
         self.spark = spark
         self.data = [{}]
-        self.schema: Optional[StructType] = None
+        self.explicit_schema: Optional[StructType] = None
         self.fields = []
         self.base_data = {}
 
@@ -39,19 +39,19 @@ class TestDataFrame:
         return self
 
     def set_type_for_column(self, column: str, type: DataType.__class__) -> "TestDataFrame":
-        if not self.schema:
-            self.schema = StructType([])
-        new_schema = self.schema.fields.copy()
+        if not self.explicit_schema:
+            self.explicit_schema = StructType([])
+        new_schema = self.explicit_schema.fields.copy()
         new_schema.append(StructField(column, type))
-        self.schema = StructType(new_schema)
+        self.explicit_schema = StructType(new_schema)
         return self
 
-    def with_schema_from(self, reference_df) -> "TestDataFrame":
-        self.schema = reference_df.schema
+    def with_schema_from(self, reference_df: DataFrame) -> "TestDataFrame":
+        self.explicit_schema = reference_df.schema
         return self
 
     def create_df(self):
-        return self.spark.createDataFrame(schema=self.schema, data=self.data)
+        return self.spark.createDataFrame(schema=self.explicit_schema, data=self.data)
 
     def with_data(self, rows: list[dict]) -> "TestDataFrame":
         self.data = rows
@@ -88,7 +88,7 @@ class TestDataFrame:
             # rows.append(base_values | {col_headers[0]: date_data[i], col_headers[1]: stars_data[i]})
 
         # join self.schema with type
-        return self.spark.createDataFrame(data=rows, schema=self.schema)
+        return self.spark.createDataFrame(data=rows, schema=self.explicit_schema)
 
 
 class EmptyDataFrame:
@@ -103,7 +103,7 @@ class EmptyDataFrame:
         pass
 
     def with_schema_from(self, reference_df):
-        self.schema = reference_df.schema
+        self.schema = reference_df.explicit_schema
         return self
 
 def test_context(spark):
