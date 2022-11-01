@@ -49,9 +49,10 @@ class TestDataFrame:
         return self
 
     def create_spark_df(self) -> DataFrame:
+        spark_data = [self.base_data | row for row in self.data]
         if len(self.explicit_schema.fields) == 0:
-            return self.spark.createDataFrame(data=self.data)
-        return self.spark.createDataFrame(schema=self.explicit_schema, data=self.data)
+            return self.spark.createDataFrame(data=spark_data)
+        return self.spark.createDataFrame(schema=self.explicit_schema, data=spark_data)
 
     def with_data(self, rows: list[dict]) -> "TestDataFrame":
         self.data = rows
@@ -63,7 +64,7 @@ class TestDataFrame:
 
         new_rows = []
         for row_from_column in column_values:
-            new_rows.append(self.base_data | {column_name: row_from_column})
+            new_rows.append({column_name: row_from_column})
 
         return self.with_data(new_rows)
 
