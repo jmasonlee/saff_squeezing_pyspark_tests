@@ -42,7 +42,7 @@ def test_multiple_row_df_creation(spark):
     base_data = TestDataFrame(spark).with_base_data(user_id="Scooby-Doo", business_id="Crusty Crab")
     input_df = base_data \
         .create_test_dataframe(date=["2000-01-02 03:04:05, 2000-01-01 04:05:06"]) \
-        .create_df()
+        .create_spark_df()
 
     df_actual = create_checkin_df_with_one_date_per_row(input_df)
 
@@ -60,7 +60,7 @@ def test_multiple_row_df_creation(spark):
             "2000-01-02 03:04:05",
             "2000-01-01 04:05:06"
         ]) \
-        .create_df()
+        .create_spark_df()
     assert_df_equality(df_expected, df_actual, ignore_nullable=True, ignore_column_order=True)
 
 

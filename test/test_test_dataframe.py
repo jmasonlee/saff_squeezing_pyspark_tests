@@ -28,7 +28,7 @@ def test_create_test_dataframe(spark):
         "2000-01-02 03:04:05",
         "2000-01-01 04:05:06"
     ]) \
-        .create_df()
+        .create_spark_df()
 
     df_actual = spark.createDataFrame([
         {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-02 03:04:05"},

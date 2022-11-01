@@ -29,7 +29,7 @@ class TestDataFrame:
         self.base_data = {}
 
     def __enter__(self):
-        return self.create_df()
+        return self.create_spark_df()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
@@ -48,7 +48,7 @@ class TestDataFrame:
         self.explicit_schema = reference_df.schema
         return self
 
-    def create_df(self) -> DataFrame:
+    def create_spark_df(self) -> DataFrame:
         if len(self.explicit_schema.fields) == 0:
             return self.spark.createDataFrame(data=self.data)
         return self.spark.createDataFrame(schema=self.explicit_schema, data=self.data)
@@ -114,6 +114,6 @@ def test_context(spark):
 
 def test_composition(spark):
     mobile_review_df = spark.createDataFrame(data=[{'business_id': 'bid', 'user_id': 'uid', 'date': '2022-04-14'}])
-    __ = TestDataFrame(spark).with_schema_from(mobile_review_df).create_df()
+    __ = TestDataFrame(spark).with_schema_from(mobile_review_df).create_spark_df()
     reviews_df = count_interactions_from_reviews(__, mobile_review_df, __, datetime(2022, 4, 14))
     assert reviews_df.count() == 1
