@@ -41,9 +41,7 @@ class TestDataFrame:
     def set_type_for_column(self, column: str, type: DataType.__class__) -> "TestDataFrame":
         if not self.explicit_schema:
             self.explicit_schema = StructType([])
-        new_schema = self.explicit_schema.fields.copy()
-        new_schema.append(StructField(column, type))
-        self.explicit_schema = StructType(new_schema)
+        self.explicit_schema.add(column, type)
         return self
 
     def with_schema_from(self, reference_df: DataFrame) -> "TestDataFrame":
