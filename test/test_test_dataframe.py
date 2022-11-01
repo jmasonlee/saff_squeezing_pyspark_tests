@@ -45,7 +45,6 @@ def test_add_column_to_schema(spark):
     assert test_df.explicit_schema.fields[0].dataType == StringType()
 
 
-@pytest.mark.skip()
 def test_multiple_columns(spark):
     base_data = TestDataFrame(spark).with_base_data(user_id="Scooby-Doo", business_id="Crusty Crab")
 

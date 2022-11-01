@@ -69,6 +69,15 @@ class TestDataFrame:
         return self.with_data(new_rows)
 
     def create_test_dataframe_from_table(self, table) -> "TestDataFrame":
+        """
+        | date                | stars |
+        | 2000-01-02 03:04:05 | 5     |
+        | 2000-01-01 04:05:06 | 3     |
+        """
+        self.data = [
+            {"stars": 5, "date": "2000-01-02 03:04:05"},
+            {"stars": 3, "date": "2000-01-01 04:05:06"}
+        ]
         return self
 
 
