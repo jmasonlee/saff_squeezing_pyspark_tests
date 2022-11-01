@@ -68,27 +68,8 @@ class TestDataFrame:
         new_test_dataframe = TestDataFrame(self.spark)
         return new_test_dataframe.with_data(new_rows)
 
-    def create_test_dataframe_from_table(self, table) -> DataFrame:
-        #col_headers = ["date", "stars"]
-        date_data = ["2000-01-02 03:04:05", "2000-01-01 04:05:06"]
-        stars_data = [5, 3]
-
-        col_headers = ["date", "stars"]
-        original_rows = [
-            ("2000-01-02 03:04:05", 5),
-            ("2000-01-01 04:05:06", 3)
-        ]
-
-        base_values = list(self.base_data.values())
-
-        rows = []
-        for i in range(len(date_data)):
-            row = base_values.extend(original_rows[i])
-            rows.append(row)
-            # rows.append(base_values | {col_headers[0]: date_data[i], col_headers[1]: stars_data[i]})
-
-        # join self.schema with type
-        return self.spark.createDataFrame(data=rows, schema=self.explicit_schema)
+    def create_test_dataframe_from_table(self, table) -> "TestDataFrame":
+        return self
 
 
 class EmptyDataFrame:

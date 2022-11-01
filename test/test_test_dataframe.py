@@ -44,12 +44,10 @@ def test_add_column_to_schema(spark):
     assert test_df.explicit_schema.fields[0].name == "name"
     assert test_df.explicit_schema.fields[0].dataType == StringType()
 
+
 @pytest.mark.skip()
 def test_multiple_columns(spark):
     base_data = TestDataFrame(spark).with_base_data(user_id="Scooby-Doo", business_id="Crusty Crab")
-    base_data.set_type_for_column("date", DateType())
-    base_data.set_type_for_column("stars", IntegerType())
-
 
     test_df = (base_data
                .create_test_dataframe_from_table(
@@ -65,4 +63,4 @@ def test_multiple_columns(spark):
         {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-01 04:05:06", "stars": 3}
     ])
 
-    assert_df_equality(test_df, df_actual, ignore_nullable=True, ignore_column_order=True, ignore_row_order=True)
+    assert_df_equality(test_df.create_spark_df(), df_actual, ignore_nullable=True, ignore_column_order=True, ignore_row_order=True)
