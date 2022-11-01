@@ -65,8 +65,7 @@ class TestDataFrame:
         for row_from_column in column_values:
             new_rows.append(self.base_data | {column_name: row_from_column})
 
-        new_test_dataframe = TestDataFrame(self.spark)
-        return new_test_dataframe.with_data(new_rows)
+        return self.with_data(new_rows)
 
     def create_test_dataframe_from_table(self, table) -> "TestDataFrame":
         return self
