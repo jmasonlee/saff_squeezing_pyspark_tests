@@ -76,8 +76,7 @@ class TestDataFrame:
         """
         column_names = self.get_column_names(table)
         self.data = [
-            {column_names[0]: self.get_column_data(table, 0)[0], column_names[1]: self.get_column_data(table, 1)[0]},
-            {column_names[0]: self.get_column_data(table, 0)[1], column_names[1]: self.get_column_data(table, 1)[1]}
+            {column_names[0]: self.get_column_data(table, 0)[i], column_names[1]: self.get_column_data(table, 1)[i]} for i in range(2)
         ]
         return self
 
