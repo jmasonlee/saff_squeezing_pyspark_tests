@@ -75,9 +75,10 @@ class TestDataFrame:
         | 2000-01-01 04:05:06 | 3     |
         """
         stars = "stars"
+        date = "date"
         self.data = [
-            {stars: 5, "date": "2000-01-02 03:04:05"},
-            {stars: 3, "date": "2000-01-01 04:05:06"}
+            {stars: 5, date: "2000-01-02 03:04:05"},
+            {stars: 3, date: "2000-01-01 04:05:06"}
         ]
         return self
 
