@@ -84,7 +84,8 @@ class TestDataFrame:
         return self
 
     def get_column_data(self, table, column_index):
-        return [5, 3] if column_index == 0 else ["2000-01-02 03:04:05", "2000-01-01 04:05:06"]
+        fake_table = [[5, 3], ["2000-01-02 03:04:05", "2000-01-01 04:05:06"]]
+        return fake_table[column_index]
 
     def get_column_names(self, table):
         return ["stars", "date"]
