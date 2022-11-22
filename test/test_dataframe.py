@@ -76,9 +76,10 @@ class TestDataFrame:
         """
         stars = "stars"
         date = "date"
+        column_names = [stars, date]
         self.data = [
-            {stars: 5, date: "2000-01-02 03:04:05"},
-            {stars: 3, date: "2000-01-01 04:05:06"}
+            {column_names[0]: 5, column_names[1]: "2000-01-02 03:04:05"},
+            {column_names[0]: 3, column_names[1]: "2000-01-01 04:05:06"}
         ]
         return self
 
