@@ -1,9 +1,9 @@
 test_multiple_columns
 	F-Our schema that we explicitly set with set....schema doesn't include the inferred schema from base_data
-	    R-Separate the data from the construction of the thing
+	  [X]  R-Separate the data from the construction of the thing
 	        [X] R-remove optional/if around explicit schema
-	            R-We didn't separate the "separate the data from constructor" thing so we didn't merge the base data with data
-	                R-Move one section at a time
+	        [X] R-We didn't separate the "separate the data from constructor" thing so we didn't merge the base data with data
+	        [X]     R-Move one section at a time
     F-Set column method should be able to handle the issue if we have a column with the same name already
     F-Explicitly set types in schema
     F-Specific data should override base_data
