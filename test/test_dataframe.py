@@ -74,9 +74,7 @@ class TestDataFrame:
         | 2000-01-02 03:04:05 | 5     |
         | 2000-01-01 04:05:06 | 3     |
         """
-        stars = "stars"
-        date = "date"
-        column_names = [stars, date]
+        column_names = ["stars", "date"]
         self.data = [
             {column_names[0]: 5, column_names[1]: "2000-01-02 03:04:05"},
             {column_names[0]: 3, column_names[1]: "2000-01-01 04:05:06"}
