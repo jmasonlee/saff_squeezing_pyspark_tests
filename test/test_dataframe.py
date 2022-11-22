@@ -75,9 +75,10 @@ class TestDataFrame:
         | 2000-01-01 04:05:06 | 3     |
         """
         column_names = self.get_column_names(table)
+        stars = [5, 3]
         self.data = [
-            {column_names[0]: 5, column_names[1]: "2000-01-02 03:04:05"},
-            {column_names[0]: 3, column_names[1]: "2000-01-01 04:05:06"}
+            {column_names[0]: stars[0], column_names[1]: "2000-01-02 03:04:05"},
+            {column_names[0]: stars[1], column_names[1]: "2000-01-01 04:05:06"}
         ]
         return self
 
