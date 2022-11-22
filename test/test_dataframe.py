@@ -77,14 +77,17 @@ class TestDataFrame:
         """
         column_names = self.get_column_names(table)
         self.data = [
-            self.get_row(i, table, column_names) for i in range(len(self.get_column_data(table, 0)))
+            self.get_row_data(i, table, column_names) for i in range(len(self.get_column_data(0, table)))
         ]
         return self
 
-    def get_row(self, row_index, table, column_names):
-        return {column_names[0]: self.get_column_data(table, 0)[row_index], column_names[1]: self.get_column_data(table, 1)[row_index]}
+    def get_row_data(self, row_index, table, column_names):
+        return {
+            column_names[0]: self.get_column_data(0, table)[row_index],
+            column_names[1]: self.get_column_data(1, table)[row_index]
+        }
 
-    def get_column_data(self, table, column_index):
+    def get_column_data(self, column_index, table):
         fake_table = [[5, 3, 4], ["2000-01-02 03:04:05", "2000-01-01 04:05:06", "2000-01-01 05:06:07"]]
         return fake_table[column_index]
 
