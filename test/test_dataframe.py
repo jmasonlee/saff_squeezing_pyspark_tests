@@ -75,11 +75,9 @@ class TestDataFrame:
         | 2000-01-01 04:05:06 | 3     |
         """
         column_names = self.get_column_names(table)
-        stars = self.get_column_data(table, 0)
-        dates = self.get_column_data(table, 1)
         self.data = [
-            {column_names[0]: stars[0], column_names[1]: dates[0]},
-            {column_names[0]: stars[1], column_names[1]: dates[1]}
+            {column_names[0]: self.get_column_data(table, 0)[0], column_names[1]: self.get_column_data(table, 1)[0]},
+            {column_names[0]: self.get_column_data(table, 0)[1], column_names[1]: self.get_column_data(table, 1)[1]}
         ]
         return self
 
