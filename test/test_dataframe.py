@@ -73,15 +73,16 @@ class TestDataFrame:
         | date                | stars |
         | 2000-01-02 03:04:05 | 5     |
         | 2000-01-01 04:05:06 | 3     |
+        | 2000-01-01 05:06:07 | 4     |
         """
         column_names = self.get_column_names(table)
         self.data = [
-            {column_names[0]: self.get_column_data(table, 0)[i], column_names[1]: self.get_column_data(table, 1)[i]} for i in range(2)
+            {column_names[0]: self.get_column_data(table, 0)[i], column_names[1]: self.get_column_data(table, 1)[i]} for i in range(3)
         ]
         return self
 
     def get_column_data(self, table, column_index):
-        fake_table = [[5, 3], ["2000-01-02 03:04:05", "2000-01-01 04:05:06"]]
+        fake_table = [[5, 3, 4], ["2000-01-02 03:04:05", "2000-01-01 04:05:06", "2000-01-01 05:06:07"]]
         return fake_table[column_index]
 
     def get_column_names(self, table):
