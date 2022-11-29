@@ -3,7 +3,8 @@ from typing import List, Dict, Any
 
 import pytest
 from chispa import assert_df_equality
-from pyspark.sql.types import DateType, IntegerType, StructType, StructField, StringType
+from pyspark.sql.functions import to_timestamp
+from pyspark.sql.types import DateType, IntegerType, StructType, StructField, StringType, TimestampType
 
 from test.test_dataframe import TestDataFrame, Field
 
@@ -45,18 +46,19 @@ def test_add_column_to_schema(spark):
     assert test_df.explicit_schema.fields[0].dataType == StringType()
 
 
+@pytest.mark.skip()
 def test_multiple_columns(spark):
     base_data = TestDataFrame(spark).with_base_data(user_id="Scooby-Doo", business_id="Crusty Crab")
 
     test_df = (base_data
-               .create_test_dataframe_from_table(
-                    """
-                    | date                | stars |
-                    | 2000-01-02 03:04:05 | 5     |
-                    | 2000-01-01 04:05:06 | 3     |
-                    | 2000-01-01 05:06:07 | 4     |
-                    """
-               ))
+    .create_test_dataframe_from_table(
+        """
+        | date                | stars |
+        | 2000-01-02 03:04:05 | 5     |
+        | 2000-01-01 04:05:06 | 3     |
+        | 2000-01-01 05:06:07 | 4     |
+        """
+    ))
 
     df_actual = spark.createDataFrame([
         {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-02 03:04:05", "stars": 5},
@@ -64,4 +66,45 @@ def test_multiple_columns(spark):
         {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-01 05:06:07", "stars": 4}
     ])
 
-    assert_df_equality(test_df.create_spark_df(), df_actual, ignore_nullable=True, ignore_column_order=True, ignore_row_order=True)
+    assert_df_equality(test_df.create_spark_df(), df_actual, ignore_nullable=True, ignore_column_order=True,
+                       ignore_row_order=True)
+
+
+def df_from_string(spark, param):
+    rows = param.strip().split('\n')
+    rdd = spark.sparkContext.parallelize(rows)
+    print(rdd.collect())
+    # spark.read.options(delimiter).csv(rdd)
+    return spark.read.options(delimiter= '|',
+                       header=True,
+                       ignoreLeadingWhiteSpace=True,
+                       ignoreTrailingWhiteSpace=True,
+                       inferSchema=True).csv(rdd)
+
+def test_dataframe_from_string(spark):
+    # I want a dataframe from a new method that we haven't made up yet that takes in a string
+
+    new_df = df_from_string(spark,
+        """
+            date                | stars
+            2000-01-02 03:04:05 | 5
+            2000-01-01 04:05:06 | 3
+            2000-01-01 05:06:07 | 4
+        """
+    )
+
+    expected_df = spark.createDataFrame(
+        schema = StructType(
+            [
+                StructField("date", StringType()),
+                StructField("stars", IntegerType()),
+            ]
+        ),
+        data=[
+            {"date": "2000-01-02 03:04:05", "stars": 5},
+            {"date": "2000-01-01 04:05:06", "stars": 3},
+            {"date": "2000-01-01 05:06:07", "stars": 4}
+        ]
+    )
+    expected_df = expected_df.withColumn("date", to_timestamp(expected_df.date))
+    assert_df_equality(new_df, expected_df)

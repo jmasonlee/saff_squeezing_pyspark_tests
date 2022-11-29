@@ -75,6 +75,12 @@ class TestDataFrame:
         | 2000-01-01 04:05:06 | 3     |
         | 2000-01-01 05:06:07 | 4     |
         """
+        """
+         date                ,  stars 
+         2000-01-02 03:04:05 ,  5     
+         2000-01-01 04:05:06 ,  3     
+         2000-01-01 05:06:07 ,  4     
+        """
         column_names = self.get_column_names(table)
         self.data = [
             self.get_row_data(i, table, column_names) for i in range(len(self.get_column_data(0, table)))
