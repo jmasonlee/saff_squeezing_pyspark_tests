@@ -61,13 +61,14 @@ def test_multiple_columns(spark):
     #########
 
     ###ASSERT####
-    df_actual = spark.createDataFrame([
+    expected_df = spark.createDataFrame([
         {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-02 03:04:05", "stars": 5},
         {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-01 04:05:06", "stars": 3},
         {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-01 05:06:07", "stars": 4}
     ])
+    expected_df = expected_df.withColumn("date", to_timestamp(expected_df.date))
 
-    assert_df_equality(test_df.create_spark_df(), df_actual, ignore_nullable=True, ignore_column_order=True,
+    assert_df_equality(test_df.create_spark_df(), expected_df, ignore_nullable=True, ignore_column_order=True,
                        ignore_row_order=True)
     #########
 

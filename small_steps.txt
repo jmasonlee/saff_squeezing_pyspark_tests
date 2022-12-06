@@ -7,3 +7,4 @@ test_multiple_columns
     F-Set column method should be able to handle the issue if we have a column with the same name already
     F-Explicitly set types in schema
     F-Specific data should override base_data
+Need to handle nested columns

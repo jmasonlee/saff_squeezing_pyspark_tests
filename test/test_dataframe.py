@@ -76,12 +76,17 @@ class TestDataFrame:
          2000-01-01 05:06:07 | 4
         """
 
-        table_df = df_from_string(self.spark, table)
+        table_df = df_from_string(self.spark, table)  # type: DataFrame
 
         column_names = self.get_column_names(table_df)
-        self.data = [
-            self.get_row_data(i, table_df, column_names) for i in range(len(self.get_column_data(0, table_df)))
-        ]
+        # self.data = [
+        #     self.get_row_data(i, table_df, column_names) for i in range(len(self.get_column_data(0, table_df)))
+        # ]
+        row = table_df.collect()
+        row1 = row[0]  #type: Row
+        row1.asDict()
+
+        self.data = [row.asDict() for row in table_df.collect()]
         return self
 
     def get_row_data(self, row_index, table, column_names):
