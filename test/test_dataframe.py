@@ -75,7 +75,13 @@ class TestDataFrame:
         return self
 
     def df_from_string(self, table):
-        return df_from_string(self.spark, table)
+        rows = table.strip().split('\n')
+        rdd = self.spark.sparkContext.parallelize(rows)
+        return self.spark.read.options(delimiter='|',
+                                       header=True,
+                                       ignoreLeadingWhiteSpace=True,
+                                       ignoreTrailingWhiteSpace=True,
+                                       inferSchema=True).csv(rdd)
 
 
 
