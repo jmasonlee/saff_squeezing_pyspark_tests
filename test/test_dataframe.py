@@ -114,10 +114,4 @@ def test_composition(spark):
 
 
 def df_from_string(spark, param):
-    rows = param.strip().split('\n')
-    rdd = spark.sparkContext.parallelize(rows)
-    return spark.read.options(delimiter= '|',
-                       header=True,
-                       ignoreLeadingWhiteSpace=True,
-                       ignoreTrailingWhiteSpace=True,
-                       inferSchema=True).csv(rdd)
+    return TestDataFrame(spark).df_from_string(param)
