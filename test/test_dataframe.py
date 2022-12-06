@@ -69,10 +69,13 @@ class TestDataFrame:
         return self.with_data(new_rows)
 
     def create_test_dataframe_from_table(self, table) -> "TestDataFrame":
-        table_df = df_from_string(self.spark, table)
+        table_df = self.df_from_string(table)
 
         self.data = [row.asDict() for row in table_df.collect()]
         return self
+
+    def df_from_string(self, table):
+        return df_from_string(self.spark, table)
 
 
 
