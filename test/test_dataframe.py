@@ -69,38 +69,11 @@ class TestDataFrame:
         return self.with_data(new_rows)
 
     def create_test_dataframe_from_table(self, table) -> "TestDataFrame":
-        """
-         date                | stars
-         2000-01-02 03:04:05 | 5
-         2000-01-01 04:05:06 | 3
-         2000-01-01 05:06:07 | 4
-        """
-
-        table_df = df_from_string(self.spark, table)  # type: DataFrame
-
-        column_names = self.get_column_names(table_df)
-        # self.data = [
-        #     self.get_row_data(i, table_df, column_names) for i in range(len(self.get_column_data(0, table_df)))
-        # ]
-        row = table_df.collect()
-        row1 = row[0]  #type: Row
-        row1.asDict()
+        table_df = df_from_string(self.spark, table)
 
         self.data = [row.asDict() for row in table_df.collect()]
         return self
 
-    def get_row_data(self, row_index, table, column_names):
-        return {
-            column_names[0]: self.get_column_data(0, table)[row_index],
-            column_names[1]: self.get_column_data(1, table)[row_index]
-        }
-
-    def get_column_data(self, column_index, table_df: DataFrame):
-        fake_table = [["2000-01-02 03:04:05", "2000-01-01 04:05:06", "2000-01-01 05:06:07"], [5, 3, 4]]
-        return fake_table[column_index]
-
-    def get_column_names(self, table_df: DataFrame):
-        return table_df.columns
 
 
 class EmptyDataFrame:
@@ -134,8 +107,6 @@ def test_composition(spark):
 def df_from_string(spark, param):
     rows = param.strip().split('\n')
     rdd = spark.sparkContext.parallelize(rows)
-    print(rdd.collect())
-    # spark.read.options(delimiter).csv(rdd)
     return spark.read.options(delimiter= '|',
                        header=True,
                        ignoreLeadingWhiteSpace=True,
