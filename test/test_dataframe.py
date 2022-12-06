@@ -70,20 +70,17 @@ class TestDataFrame:
 
     def create_test_dataframe_from_table(self, table) -> "TestDataFrame":
         """
-        | date                | stars |
-        | 2000-01-02 03:04:05 | 5     |
-        | 2000-01-01 04:05:06 | 3     |
-        | 2000-01-01 05:06:07 | 4     |
+         date                | stars
+         2000-01-02 03:04:05 | 5
+         2000-01-01 04:05:06 | 3
+         2000-01-01 05:06:07 | 4
         """
-        """
-         date                ,  stars 
-         2000-01-02 03:04:05 ,  5     
-         2000-01-01 04:05:06 ,  3     
-         2000-01-01 05:06:07 ,  4     
-        """
-        column_names = self.get_column_names(table)
+
+        table_df = df_from_string(self.spark, table)
+
+        column_names = self.get_column_names(table_df)
         self.data = [
-            self.get_row_data(i, table, column_names) for i in range(len(self.get_column_data(0, table)))
+            self.get_row_data(i, table_df, column_names) for i in range(len(self.get_column_data(0, table_df)))
         ]
         return self
 
@@ -93,12 +90,12 @@ class TestDataFrame:
             column_names[1]: self.get_column_data(1, table)[row_index]
         }
 
-    def get_column_data(self, column_index, table):
-        fake_table = [[5, 3, 4], ["2000-01-02 03:04:05", "2000-01-01 04:05:06", "2000-01-01 05:06:07"]]
+    def get_column_data(self, column_index, table_df: DataFrame):
+        fake_table = [["2000-01-02 03:04:05", "2000-01-01 04:05:06", "2000-01-01 05:06:07"], [5, 3, 4]]
         return fake_table[column_index]
 
-    def get_column_names(self, table):
-        return ["stars", "date"]
+    def get_column_names(self, table_df: DataFrame):
+        return table_df.columns
 
 
 class EmptyDataFrame:
