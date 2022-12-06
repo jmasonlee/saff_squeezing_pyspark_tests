@@ -1,9 +1,8 @@
-import pytest
 from chispa import assert_df_equality
 from pyspark.sql.functions import to_timestamp
 from pyspark.sql.types import IntegerType, StructType, StructField, StringType
 
-from test.test_dataframe import TestDataFrame, df_from_string
+from test.test_dataframe import TestDataFrame
 
 
 # Bug: createDataFrame returns a new dataframe without the base_data or schema of the parent dataframe
@@ -76,14 +75,12 @@ def test_multiple_columns(spark):
 def test_dataframe_from_string(spark):
     # I want a dataframe from a new method that we haven't made up yet that takes in a string
 
-    new_df = df_from_string(spark,
-        """
+    new_df = TestDataFrame(spark).df_from_string("""
             date                | stars
             2000-01-02 03:04:05 | 5
             2000-01-01 04:05:06 | 3
             2000-01-01 05:06:07 | 4
-        """
-                            )
+        """)
 
     expected_df = spark.createDataFrame(
         schema = StructType(

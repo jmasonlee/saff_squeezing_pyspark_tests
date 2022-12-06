@@ -1,12 +1,9 @@
-import functools
-
 # Balazs idea
 from datetime import datetime
 from typing import Optional
 
-import pytest
 from pyspark.sql import DataFrame
-from pyspark.sql.types import DataType, StructType, StructField
+from pyspark.sql.types import DataType, StructType
 
 from pandemic_recovery_batch import count_interactions_from_reviews
 
@@ -111,7 +108,3 @@ def test_composition(spark):
     __ = TestDataFrame(spark).with_schema_from(mobile_review_df).create_spark_df()
     reviews_df = count_interactions_from_reviews(__, mobile_review_df, __, datetime(2022, 4, 14))
     assert reviews_df.count() == 1
-
-
-def df_from_string(spark, param):
-    return TestDataFrame(spark).df_from_string(param)
