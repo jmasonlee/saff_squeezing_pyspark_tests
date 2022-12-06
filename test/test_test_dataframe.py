@@ -1,12 +1,9 @@
-from collections import namedtuple
-from typing import List, Dict, Any
-
 import pytest
 from chispa import assert_df_equality
 from pyspark.sql.functions import to_timestamp
-from pyspark.sql.types import DateType, IntegerType, StructType, StructField, StringType, TimestampType
+from pyspark.sql.types import IntegerType, StructType, StructField, StringType
 
-from test.test_dataframe import TestDataFrame, Field
+from test.test_dataframe import TestDataFrame, df_from_string
 
 
 # Bug: createDataFrame returns a new dataframe without the base_data or schema of the parent dataframe
@@ -70,17 +67,6 @@ def test_multiple_columns(spark):
                        ignore_row_order=True)
 
 
-def df_from_string(spark, param):
-    rows = param.strip().split('\n')
-    rdd = spark.sparkContext.parallelize(rows)
-    print(rdd.collect())
-    # spark.read.options(delimiter).csv(rdd)
-    return spark.read.options(delimiter= '|',
-                       header=True,
-                       ignoreLeadingWhiteSpace=True,
-                       ignoreTrailingWhiteSpace=True,
-                       inferSchema=True).csv(rdd)
-
 def test_dataframe_from_string(spark):
     # I want a dataframe from a new method that we haven't made up yet that takes in a string
 
@@ -91,7 +77,7 @@ def test_dataframe_from_string(spark):
             2000-01-01 04:05:06 | 3
             2000-01-01 05:06:07 | 4
         """
-    )
+                            )
 
     expected_df = spark.createDataFrame(
         schema = StructType(

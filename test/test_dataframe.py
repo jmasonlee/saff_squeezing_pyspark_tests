@@ -127,3 +127,15 @@ def test_composition(spark):
     __ = TestDataFrame(spark).with_schema_from(mobile_review_df).create_spark_df()
     reviews_df = count_interactions_from_reviews(__, mobile_review_df, __, datetime(2022, 4, 14))
     assert reviews_df.count() == 1
+
+
+def df_from_string(spark, param):
+    rows = param.strip().split('\n')
+    rdd = spark.sparkContext.parallelize(rows)
+    print(rdd.collect())
+    # spark.read.options(delimiter).csv(rdd)
+    return spark.read.options(delimiter= '|',
+                       header=True,
+                       ignoreLeadingWhiteSpace=True,
+                       ignoreTrailingWhiteSpace=True,
+                       inferSchema=True).csv(rdd)
