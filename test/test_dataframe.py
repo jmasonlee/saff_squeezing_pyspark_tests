@@ -37,8 +37,6 @@ class TestDataFrame:
         return self
 
     def set_type_for_column(self, column: str, type: DataType.__class__) -> "TestDataFrame":
-        # if not self.explicit_schema:
-        #     self.explicit_schema = StructType([])
         self.explicit_schema.add(column, type)
         return self
 
