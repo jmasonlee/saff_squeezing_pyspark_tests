@@ -5,6 +5,8 @@ test_multiple_columns
 	        [X] R-We didn't separate the "separate the data from constructor" thing so we didn't merge the base data with data
 	        [X]     R-Move one section at a time
     F-Set column method should be able to handle the issue if we have a column with the same name already
+        [X] F- If the name already exists in base data or data, we cast the type
+        F- If the column already exists in the explicit schema, replace the column and type with the new explicit type
     F-Explicitly set types in schema
     F-Specific data should override base_data
 Need to handle nested columns
