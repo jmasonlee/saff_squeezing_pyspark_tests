@@ -13,4 +13,6 @@ test_multiple_columns
     F-Specific data should override base_data
 Need to handle nested columns
 
+FIX FAILING TESTS!!!
+
 Assumption: The primary key of the columns in the schema is the column name.
