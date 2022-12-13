@@ -1,6 +1,6 @@
 from chispa import assert_df_equality
 from pyspark.sql.functions import to_timestamp
-from pyspark.sql.types import IntegerType, StructType, StructField, StringType
+from pyspark.sql.types import IntegerType, StructType, StructField, StringType, LongType
 
 from test.test_dataframe import TestDataFrame
 
@@ -72,6 +72,21 @@ def test_multiple_columns(spark):
     #########
 
 
+def test_explicitly_set_column_type_for_base_data(spark):
+    base_data = TestDataFrame(spark).with_base_data(user_id="12345", business_id="2468")
+    base_data = base_data.set_type_for_column("user_id", LongType())
+    base_data = base_data.set_type_for_column("business_id", LongType())
+
+    actual_df = base_data.create_spark_df()
+
+    expected_df = spark.createDataFrame([
+        {"user_id": 12345, "business_id": 2468},
+    ])
+
+    assert_df_equality(actual_df, expected_df, ignore_nullable=True, ignore_column_order=True,
+                       ignore_row_order=True)
+
+
 def test_dataframe_from_string(spark):
     # I want a dataframe from a new method that we haven't made up yet that takes in a string
 
@@ -83,7 +98,7 @@ def test_dataframe_from_string(spark):
         """)
 
     expected_df = spark.createDataFrame(
-        schema = StructType(
+        schema=StructType(
             [
                 StructField("date", StringType()),
                 StructField("stars", IntegerType()),

@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 from pyspark.sql import DataFrame
+from pyspark.sql.functions import col
 from pyspark.sql.types import DataType, StructType
 
 from pandemic_recovery_batch import count_interactions_from_reviews
@@ -49,7 +50,12 @@ class TestDataFrame:
         spark_data = [self.base_data | row for row in self.data]
         if len(self.explicit_schema.fields) == 0:
             return self.spark.createDataFrame(data=spark_data)
-        return self.spark.createDataFrame(schema=self.explicit_schema, data=spark_data)
+        dataframe = self.spark.createDataFrame(data=spark_data)
+
+        for column in self.explicit_schema.fields:
+            dataframe = dataframe.withColumn(column.name, col(column.name).cast(column.dataType))
+
+        return dataframe
 
     def with_data(self, rows: list[dict]) -> "TestDataFrame":
         self.data = rows
