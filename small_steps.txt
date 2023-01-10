@@ -13,6 +13,7 @@ test_multiple_columns
     F-Explicitly set types in schema
         - B  Numbers wrapped in quotes are translated into strings INCLUDING the quotes (eg. '1')
 F-Need to handle nested columns
+B-dict Union | only 3.9+
 
 FIX FAILING TESTS!!!
 
