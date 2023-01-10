@@ -59,13 +59,40 @@ def test_multiple_columns(spark):
     ))
     #########
 
-    ###ASSERT####
+
     expected_df = spark.createDataFrame([
         {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-02 03:04:05", "stars": 5},
         {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-01 04:05:06", "stars": 3},
         {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-01 05:06:07", "stars": 4}
     ])
     expected_df = expected_df.withColumn("date", to_timestamp(expected_df.date))
+
+    assert_df_equality(test_df.create_spark_df(), expected_df, ignore_nullable=True, ignore_column_order=True,
+                       ignore_row_order=True)
+    #########
+
+def test_multiple_columns_with_same_name(spark):
+    ###ARRANGE###
+    base_data = TestDataFrame(spark).with_base_data(user_id="Scooby-Doo", business_id="Crusty Crab")
+    ############
+
+    ###ACT#####
+    test_df = (base_data
+    .create_test_dataframe_from_table(
+        """
+         user_id
+         test_user_1 
+         test_user_2 
+         test_user_3 
+        """
+    ))
+    #########
+
+    expected_df = spark.createDataFrame([
+        {"user_id": "test_user_1", "business_id": "Crusty Crab"},
+        {"user_id": "test_user_2", "business_id": "Crusty Crab"},
+        {"user_id": "test_user_3", "business_id": "Crusty Crab"}
+    ])
 
     assert_df_equality(test_df.create_spark_df(), expected_df, ignore_nullable=True, ignore_column_order=True,
                        ignore_row_order=True)

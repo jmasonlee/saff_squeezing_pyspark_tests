@@ -45,6 +45,8 @@ class TestDataFrame:
         return self
 
     def create_spark_df(self) -> DataFrame:
+        # | only in 3.9+ - What version does chispa support?
+        # What happens
         spark_data = [self.base_data | row for row in self.data]
         dataframe = self.spark.createDataFrame(data=spark_data)
 
@@ -99,15 +101,3 @@ class EmptyDataFrame:
     def with_schema_from(self, reference_df):
         self.schema = reference_df.explicit_schema
         return self
-
-def test_context(spark):
-    mobile_review_df = spark.createDataFrame(data=[{'business_id': 'bid', 'user_id': 'uid', 'date': '2022-04-14'}])
-    with TestDataFrame(spark).with_schema_from(mobile_review_df) as __:
-        reviews_df = count_interactions_from_reviews(__, mobile_review_df, __, datetime(2022, 4, 14))
-        assert reviews_df.count() == 1
-
-def test_composition(spark):
-    mobile_review_df = spark.createDataFrame(data=[{'business_id': 'bid', 'user_id': 'uid', 'date': '2022-04-14'}])
-    __ = TestDataFrame(spark).with_schema_from(mobile_review_df).create_spark_df()
-    reviews_df = count_interactions_from_reviews(__, mobile_review_df, __, datetime(2022, 4, 14))
-    assert reviews_df.count() == 1

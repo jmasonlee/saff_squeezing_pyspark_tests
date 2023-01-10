@@ -1,5 +1,5 @@
 test_multiple_columns
-        F- create_test_dataframe handles multiple columns... or we delete it?
+    [X] F- create_test_dataframe handles multiple columns... or we delete it?
 	[X] F-Our schema that we explicitly set with set....schema doesn't include the inferred schema from base_data
 	  [X]  R-Separate the data from the construction of the thing
 	        [X] R-remove optional/if around explicit schema
@@ -9,9 +9,9 @@ test_multiple_columns
         [X] F- If the name already exists in base data or data, we cast the type
                 t -  test for setting column type in data
         F- If the column already exists in the explicit schema, replace the column and type with the new explicit type
+            t-test for what happens with multiple columns with the same name
     F-Explicitly set types in schema
-    F-Specific data should override base_data
-Need to handle nested columns
+F-Need to handle nested columns
 
 FIX FAILING TESTS!!!
 
