@@ -99,6 +99,49 @@ def test_multiple_columns_with_same_name(spark):
     #########
 
 
+def test_multiple_columns_with_same_name_but_different_types(spark):
+    ###ARRANGE###
+    base_data = TestDataFrame(spark).with_base_data(user_id="Scooby-Doo", business_id="Crusty Crab")
+    ############
+
+    ###ACT#####
+    test_df = (base_data
+    .create_test_dataframe_from_table(
+        """
+         user_id
+         1 
+         2 
+         3 
+        """
+    )).w
+    #########
+
+    expected_df = spark.createDataFrame([
+        {"user_id": 1, "business_id": "Crusty Crab"},
+        {"user_id": 2, "business_id": "Crusty Crab"},
+        {"user_id": 3, "business_id": "Crusty Crab"}
+    ])
+    # expected_df = expected_df.withColumn("user_id", ...int)
+    # expected_df = expected_df.with_expicit_schema("user_id", ...int)
+
+
+    # We have a user_id that is formatted as 1_123 on mobile or 123 on www.
+    # The function we want to test splits based on the underscore and returns the first half
+
+    '''
+    id          ->   id
+    1_123            1
+    '''
+    # if col doesn't exist -> easy
+    # if col exist in base data ->
+    #   -> use the original base data type
+    #   -> unless explicitly defined otherwise
+
+    assert_df_equality(test_df.create_spark_df(), expected_df, ignore_nullable=True, ignore_column_order=True,
+                       ignore_row_order=True)
+    #########
+
+
 def test_explicitly_set_column_type_for_base_data(spark):
     base_data = TestDataFrame(spark).with_base_data(user_id="12345", business_id="2468")
     base_data = base_data.set_type_for_column("user_id", LongType())
