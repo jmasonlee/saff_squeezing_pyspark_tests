@@ -10,9 +10,7 @@ from test.test_dataframe import create_empty_df
 
 # Informative error message when someone tries to build an empty dataframe with schema and without types
 # Allow not nullable fields in empty dfs
-@pytest.mark.skip("Blocked by error not allowing us to build empty dfs without nullable fields")
 def test_construct_post_pandemic_recovery_df(spark):
-    empty_df = create_empty_df(spark)
     business_df = create_empty_df(spark,
                                   StructType(
                                       [
