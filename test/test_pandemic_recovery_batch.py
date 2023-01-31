@@ -48,6 +48,3 @@ def test_construct_post_pandemic_recovery_df(spark):
     assert_df_equality(expected_df, output_df)
 
 
-def test_can_create_an_empty_df_with_a_non_nullable_field(spark):
-    create_empty_df(spark, StructType([ StructField('_', StringType(), False)]))
-

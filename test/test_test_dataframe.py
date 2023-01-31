@@ -2,7 +2,7 @@ from chispa import assert_df_equality
 from pyspark.sql.functions import to_timestamp
 from pyspark.sql.types import IntegerType, StructType, StructField, StringType, LongType
 
-from test.test_dataframe import TestDataFrame
+from test.test_dataframe import TestDataFrame, create_empty_df
 
 
 # Bug: createDataFrame returns a new dataframe without the base_data or schema of the parent dataframe
@@ -182,3 +182,7 @@ def test_dataframe_from_string(spark):
     )
     expected_df = expected_df.withColumn("date", to_timestamp(expected_df.date))
     assert_df_equality(new_df, expected_df)
+
+
+def test_can_create_an_empty_df_with_a_non_nullable_field(spark):
+    create_empty_df(spark, StructType([ StructField('_', StringType(), False)]))
