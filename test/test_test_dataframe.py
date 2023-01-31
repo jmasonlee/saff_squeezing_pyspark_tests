@@ -59,7 +59,6 @@ def test_multiple_columns(spark):
     ))
     #########
 
-
     expected_df = spark.createDataFrame([
         {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-02 03:04:05", "stars": 5},
         {"user_id": "Scooby-Doo", "business_id": "Crusty Crab", "date": "2000-01-01 04:05:06", "stars": 3},
@@ -70,6 +69,7 @@ def test_multiple_columns(spark):
     assert_df_equality(test_df.create_spark_df(), expected_df, ignore_nullable=True, ignore_column_order=True,
                        ignore_row_order=True)
     #########
+
 
 def test_multiple_columns_with_same_name(spark):
     ###ARRANGE###
@@ -123,7 +123,6 @@ def test_multiple_columns_with_same_name_but_different_types(spark):
     ])
     # expected_df = expected_df.withColumn("user_id", ...int)
     # expected_df = expected_df.with_expicit_schema("user_id", ...int)
-
 
     # We have a user_id that is formatted as 1_123 on mobile or 123 on www.
     # The function we want to test splits based on the underscore and returns the first half
@@ -185,7 +184,8 @@ def test_dataframe_from_string(spark):
 
 
 def test_can_create_an_empty_df_with_a_non_nullable_field(spark):
-    create_empty_df(spark, StructType([ StructField('_', StringType(), False)]))
+    assert create_empty_df(spark, StructType([StructField('_', StringType(), False)])).count() == 0
+
 
 def test_can_create_an_empty_df_without_a_schema(spark):
-    create_empty_df(spark)
+    assert create_empty_df(spark).count() == 0
