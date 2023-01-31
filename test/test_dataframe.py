@@ -88,5 +88,5 @@ class TestDataFrame:
 
 def create_empty_df(spark, schema=None):
     if schema is None:
-        schema = []
+        return spark.createDataFrame(schema=schema, data=[{}])
     return spark.createDataFrame(schema=schema, data=[])

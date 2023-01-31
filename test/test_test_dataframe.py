@@ -186,3 +186,6 @@ def test_dataframe_from_string(spark):
 
 def test_can_create_an_empty_df_with_a_non_nullable_field(spark):
     create_empty_df(spark, StructType([ StructField('_', StringType(), False)]))
+
+def test_can_create_an_empty_df_without_a_schema(spark):
+    create_empty_df(spark)
