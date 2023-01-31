@@ -86,18 +86,7 @@ class TestDataFrame:
                                        inferSchema=True).csv(rdd)
 
 
-
-class EmptyDataFrame:
-    def __init__(self, spark):
-        self.spark = spark
-        self.schema = []
-
-    def __enter__(self):
-        return self.spark.createDataFrame(schema=self.schema, data=[{}])
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
-
-    def with_schema_from(self, reference_df):
-        self.schema = reference_df.explicit_schema
-        return self
+def create_empty_df(spark, schema=None):
+    if schema is None:
+        schema = []
+    return spark.createDataFrame(schema=schema, data=[])

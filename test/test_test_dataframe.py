@@ -113,7 +113,7 @@ def test_multiple_columns_with_same_name_but_different_types(spark):
          2 
          3 
         """
-    )).w
+    ))
     #########
 
     expected_df = spark.createDataFrame([
