@@ -5,11 +5,12 @@ from chispa import assert_df_equality
 from pyspark.sql.types import *
 
 from pandemic_recovery_batch import construct_post_pandemic_recovery_df
-from test.test_dataframe import create_empty_df
+from test.test_dataframe import create_empty_df, TestDataFrame
 
 
 # Informative error message when someone tries to build an empty dataframe with schema and without types
-# Allow not nullable fields in empty dfs
+
+
 def test_construct_post_pandemic_recovery_df(spark):
     business_df = create_empty_df(spark,
                                   StructType(
@@ -17,6 +18,7 @@ def test_construct_post_pandemic_recovery_df(spark):
                                           StructField('business_id', StringType())
                                       ])
                                   )
+    # business_df = TestDataFrame(spark).with_explicit_schema({"business_id": StringType()})
     all_df = create_empty_df(spark,
                              StructType(
                                  [
