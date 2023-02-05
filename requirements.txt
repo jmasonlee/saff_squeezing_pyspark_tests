@@ -1,2 +1,4 @@
 pyspark
 pytest
+python-lsp-server[all]
+pylsp-rope
