@@ -3,7 +3,7 @@ from datetime import datetime
 from pyspark.sql import SparkSession
 
 from pandemic_recovery_batch import transform
-from test.saff_squeeze_start_point import create_df_from_json, read_json, data_frame_to_json
+from test.saff_squeeze_start_point_test import create_df_from_json, read_json, data_frame_to_json
 
 
 def test_only_counts_mobile_reviews_done_separately_from_checkins(spark: SparkSession) -> None:
