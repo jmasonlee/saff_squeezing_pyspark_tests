@@ -9,14 +9,13 @@ from pandemic_recovery_batch import count_checkins
 
 def test_will_only_count_checkins_from_rundate(spark: SparkContext) -> None:
     run_date = datetime.datetime(2001, 1, 1)
-    yesterday = run_date - datetime.timedelta(days=1)
-
+    one_day = datetime.timedelta(days=1)
     checkins_df = TestDataFrame(spark).create_test_dataframe_from_table(
         f"""
-        date        | business_id
-        {run_date}     | 1
-        {run_date}     | 1
-        {yesterday} | 1
+        date                    | business_id
+        {run_date}              | 1
+        {run_date}              | 1
+        {run_date - one_day}    | 1
         """
     ).create_spark_df()
 
